@@ -1,0 +1,53 @@
+---
+title: "User Registration"
+description: "Create new user accounts with secure verification"
+icon: "user-plus"
+---
+
+## User Registration
+
+Create new user accounts for Nyra Wallet with secure verification and validation.
+
+## Registration Process
+
+The registration flow includes:
+
+1. **User submits registration form** with required information
+2. **Email verification** is sent to confirm the account
+3. **Account is activated** after email verification
+4. **Welcome email** is sent with setup instructions
+
+## Required Information
+
+- **Email address** (must be unique and valid)
+- **Password** (minimum 8 characters, must include uppercase, lowercase, number, and special character)
+- **Full name** (first and last name)
+- **Phone number** (optional, for 2FA)
+
+## Validation Rules
+
+<Info>
+  All user inputs are validated both on the client and server side for security.
+</Info>
+
+- Email format validation
+- Password strength requirements
+- Duplicate email prevention
+- Phone number format validation (if provided)
+
+## Security Features
+
+- **Email verification** prevents fake account creation
+- **Password hashing** with bcrypt and salt
+- **Rate limiting** on registration attempts
+- **CAPTCHA protection** for bot prevention
+
+## Next Steps
+
+<Card title="API Reference" icon="terminal" href="/api-reference/auth/register">
+  View the complete registration API endpoint documentation.
+</Card>
+
+<Card title="User Login" icon="sign-in" href="/auth/login">
+  Learn how to authenticate existing users.
+</Card>

@@ -1,0 +1,39 @@
+---
+title: "User Login"
+description: "Authenticate users with secure login credentials"
+icon: "sign-in"
+---
+
+## User Login
+
+Authenticate existing users to access their Nyra Wallet accounts.
+
+## How It Works
+
+The login process follows these steps:
+
+1. **User submits credentials** (email/username and password)
+2. **System validates credentials** against stored user data
+3. **JWT token is generated** upon successful authentication
+4. **Token is returned** to the client for subsequent API calls
+
+## Security Considerations
+
+<Warning>
+  Never store JWT tokens in localStorage or sessionStorage. Use secure HTTP-only cookies or in-memory storage for production applications.
+</Warning>
+
+- Passwords are hashed using bcrypt with salt
+- Failed login attempts are rate-limited
+- Sessions expire after 24 hours of inactivity
+- Multi-factor authentication can be enabled for additional security
+
+## Next Steps
+
+<Card title="API Reference" icon="terminal" href="/api-reference/auth/login">
+  View the complete login API endpoint documentation.
+</Card>
+
+<Card title="User Registration" icon="user-plus" href="/auth/register">
+  Learn how to create new user accounts.
+</Card>
