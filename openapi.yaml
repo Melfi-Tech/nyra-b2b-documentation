@@ -2298,10 +2298,70 @@ paths:
                         example: 1
         '400':
           description: Bad Request - If business fees already exist for the business or invalid data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  message:
+                    type: string
+                    example: "Business fees already exist for this business"
         '401':
           description: Unauthorized - If the JWT token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid JWT token"
         '403':
           description: Forbidden - If the user doesn't have ADMIN or SUPER_ADMIN role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "User doesn't have ADMIN or SUPER_ADMIN role"
 
     get:
       summary: Get All Business Fees
@@ -2458,18 +2518,21 @@ paths:
               schema:
                 type: object
                 properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
                   success:
                     type: boolean
                     example: false
                   error:
-                    type: object
-                    properties:
-                      code:
-                        type: string
-                        example: "UNAUTHORIZED"
-                      message:
-                        type: string
-                        example: "Invalid client ID or secret"
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid JWT token"
         '403':
           description: Forbidden - If the user doesn't have ADMIN or SUPER_ADMIN role
           content:
@@ -2477,18 +2540,21 @@ paths:
               schema:
                 type: object
                 properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  status:
+                    type: string
+                    example: "error"
                   success:
                     type: boolean
                     example: false
                   error:
-                    type: object
-                    properties:
-                      code:
-                        type: string
-                        example: "FORBIDDEN"
-                      message:
-                        type: string
-                        example: "API client not authorized for the business"
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "User doesn't have ADMIN or SUPER_ADMIN role"
 
   /business-fees/{businessId}:
     get:
@@ -2653,18 +2719,21 @@ paths:
               schema:
                 type: object
                 properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
                   success:
                     type: boolean
                     example: false
                   error:
-                    type: object
-                    properties:
-                      code:
-                        type: string
-                        example: "UNAUTHORIZED"
-                      message:
-                        type: string
-                        example: "Invalid client ID or secret"
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid JWT token"
         '403':
           description: Forbidden - If the user doesn't have ADMIN or SUPER_ADMIN role
           content:
@@ -2672,18 +2741,21 @@ paths:
               schema:
                 type: object
                 properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  status:
+                    type: string
+                    example: "error"
                   success:
                     type: boolean
                     example: false
                   error:
-                    type: object
-                    properties:
-                      code:
-                        type: string
-                        example: "FORBIDDEN"
-                      message:
-                        type: string
-                        example: "API client not authorized for the business"
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "User doesn't have ADMIN or SUPER_ADMIN role"
         '404':
           description: Not Found - If no business fees found for the business ID
 
@@ -2936,18 +3008,21 @@ paths:
               schema:
                 type: object
                 properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
                   success:
                     type: boolean
                     example: false
                   error:
-                    type: object
-                    properties:
-                      code:
-                        type: string
-                        example: "UNAUTHORIZED"
-                      message:
-                        type: string
-                        example: "Invalid client ID or secret"
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client ID or secret"
         '403':
           description: Forbidden - If the user doesn't have ADMIN or SUPER_ADMIN role
           content:
@@ -2955,18 +3030,21 @@ paths:
               schema:
                 type: object
                 properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  status:
+                    type: string
+                    example: "error"
                   success:
                     type: boolean
                     example: false
                   error:
-                    type: object
-                    properties:
-                      code:
-                        type: string
-                        example: "FORBIDDEN"
-                      message:
-                        type: string
-                        example: "API client not authorized for the business"
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "User doesn't have ADMIN or SUPER_ADMIN role"
         '404':
           description: Not Found - If no business fees found for the business ID
 
