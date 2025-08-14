@@ -1,0 +1,31 @@
+---
+title: 'Delete Business Fees'
+description: 'Deletes business fee configuration for a specific business'
+openapi: 'DELETE /business-fees/{businessId}'
+---
+
+## Overview
+
+Deletes business fee configuration for a specific business. This action removes all fee settings and returns the business to default fee configurations.
+
+## Authentication
+
+- **Type**: JWT Token
+- **Headers**:
+  - `Authorization`: `Bearer <jwt_token>` (required, string)
+- **Required Role**: ADMIN or SUPER_ADMIN
+
+## Path Parameters
+
+- **businessId**: The business ID to delete fees for (required, string)
+
+## Response
+
+Returns a success message confirming the deletion of the business fee configuration.
+
+## Error Handling
+
+- **400**: Invalid businessId
+- **401**: Invalid JWT token
+- **403**: User doesn't have ADMIN or SUPER_ADMIN role
+- **404**: No business fees found for the business ID

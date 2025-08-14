@@ -1,0 +1,38 @@
+---
+title: 'Create Business Fees'
+description: 'Creates business fee configuration for a specific business with custom fee settings for different transaction types'
+openapi: 'POST /business-fees'
+---
+
+## Overview
+
+Creates business fee configuration for a specific business. Each business can have custom fee settings for different transaction types including wallet transfers, wallet funding, card creation, and card funding.
+
+## Authentication
+
+- **Type**: JWT Token
+- **Headers**:
+  - `Authorization`: `Bearer <jwt_token>` (required, string)
+- **Required Role**: ADMIN or SUPER_ADMIN
+
+## Currency Units
+
+**Important:** Different fee types use different currency units:
+- **Wallet Transfer & Wallet Funding**: Fees are in **kobo** 
+  - Example: `flat_fee: 2500` = ₦25.00
+- **Card Creation & Card Funding**: Fees are in **USD**
+  - Example: `flat_fee: 4` = $4.00
+
+## Request Body
+
+The request requires a business ID and optional fee configurations for different transaction types.
+
+## Response
+
+Returns the created fee configuration with detailed business information and fee structures.
+
+## Error Handling
+
+- **400**: Business fees already exist for the business or invalid data
+- **401**: Invalid JWT token
+- **403**: User doesn't have ADMIN or SUPER_ADMIN role

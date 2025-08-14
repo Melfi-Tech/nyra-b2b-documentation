@@ -1,0 +1,146 @@
+---
+title: 'API Client Management'
+description: 'Create and manage API clients for business integrations'
+openapi: 'POST /business/{businessId}/api-clients'
+---
+
+## Create API Client
+
+Creates a new API client for the specified business or regenerates the client secret if one already exists.
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.nyrawallet.com/business/business_123/api-clients' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "app_name": "My Integration App"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.nyrawallet.com/business/business_123/api-clients', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_JWT_TOKEN',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    app_name: 'My Integration App'
+  })
+});
+```
+
+```python Python
+import requests
+
+response = requests.post('https://api.nyrawallet.com/business/business_123/api-clients',
+  headers={
+    'Authorization': 'Bearer YOUR_JWT_TOKEN',
+    'Content-Type': 'application/json'
+  },
+  json={
+    'app_name': 'My Integration App'
+  }
+)
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success
+{
+  "message": "API client created successfully. Please save your secret key, it will not be shown again.",
+  "data": {
+    "client_id": "client_789",
+    "client_secret": "secret_key_abc123"
+  }
+}
+```
+
+```json Error
+{
+  "success": false,
+  "error": {
+    "code": "BUSINESS_NOT_FOUND",
+    "message": "Business not found"
+  }
+}
+```
+</ResponseExample>
+
+## Authentication
+
+<Warning>
+  All endpoints require JWT authentication. You must be the owner of the business to manage its API clients.
+</Warning>
+
+- **Method**: JWT token in `Authorization: Bearer <token>` header
+- **Scope**: Business ownership required
+- **Permissions**: Full access to API client management for owned businesses
+
+## Get API Client Details
+
+Retrieves the API client details for the specified business. The client secret is not included for security reasons.
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.nyrawallet.com/business/business_123/api-clients' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.nyrawallet.com/business/business_123/api-clients', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_JWT_TOKEN'
+  }
+});
+```
+
+```python Python
+import requests
+
+response = requests.get('https://api.nyrawallet.com/business/business_123/api-clients',
+  headers={
+    'Authorization': 'Bearer YOUR_JWT_TOKEN'
+  }
+)
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success
+{
+  "message": "API client retrieved successfully.",
+  "data": {
+    "appName": "My Integration App",
+    "clientId": "client_789",
+    "environment": "LIVE",
+    "isActive": true,
+    "lastUsedAt": "2024-01-15T10:30:00Z",
+    "businessId": "business_123",
+    "businessName": "Acme Corporation",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "_v": 0
+  }
+}
+```
+
+```json Error
+{
+  "success": false,
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "User does not own the business"
+  }
+}
+```
+</ResponseExample>
+
+## Security Notes
+
+- **Client Secret**: Only shown once during creation/regeneration
+- **Secret Storage**: Store securely, never commit to version control
+- **Access Control**: Only business owners can manage API clients
+- **Secret Rotation**: Regenerate secrets if compromised
+

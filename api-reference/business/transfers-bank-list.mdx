@@ -1,0 +1,31 @@
+---
+title: 'List Available Banks'
+description: 'Retrieve list of banks available for transfers'
+openapi: 'GET /business/transfers/bank/list'
+---
+
+## Overview
+
+Retrieves a list of banks available for transfers. This endpoint provides the necessary bank codes and names for transfer operations.
+
+## Authentication
+
+- **Type**: API Client
+- **Headers**: 
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Response
+
+Returns an array of banks with their codes and names.
+
+## Error Handling
+
+- **400**: Invalid request
+- **401**: Invalid client credentials
+
+## Use Cases
+
+- Populate bank selection dropdowns in applications
+- Validate bank codes before transfers
+- Provide users with available banking options

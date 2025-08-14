@@ -1,0 +1,36 @@
+---
+title: 'Initiate Business Transfer (API)'
+description: 'Initiate a transfer from a business float wallet via API'
+openapi: 'POST /business/transfers'
+---
+
+## Overview
+
+Initiates a transfer from a business float wallet via API. This endpoint is designed for server-to-server communication using API client credentials.
+
+## Authentication
+
+- **Type**: API Client
+- **Headers**: 
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Prerequisites
+
+- The source account must be a business float wallet
+- API client must be authorized for the business
+- Sufficient funds must be available
+
+## Request Body
+
+The request requires beneficiary details, source account, amount, and optional description and sender name.
+
+## Response
+
+Returns transaction details including transaction ID, reference, amount, charges, and timestamps.
+
+## Error Handling
+
+- **400**: Invalid payload, insufficient funds, or non-float wallet
+- **401**: Invalid client credentials
+- **404**: Business or wallet not found

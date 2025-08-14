@@ -2,6 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Nyra Wallet",
+  "openapi": "openapi.yaml",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -27,6 +28,14 @@
               "auth/login",
               "auth/register"
             ]
+          },
+          {
+            "group": "Business Management",
+            "pages": [
+              "business/overview",
+              "business/register",
+              "business/api-clients"
+            ]
           }
         ]
       },
@@ -38,6 +47,53 @@
             "pages": [
               "api-reference/auth/login",
               "api-reference/auth/register"
+            ]
+          },
+          {
+            "group": "Management",
+            "pages": [
+              "api-reference/business/register",
+              "api-reference/business/all",
+              "api-reference/business/get",
+              "api-reference/business/api-clients"
+            ]
+          },
+          {
+            "group": "Transfers",
+            "pages": [
+              "api-reference/business/transfers-initiate",
+              "api-reference/business/transfers-dashboard",
+              "api-reference/business/transfers-name-enquiry",
+              "api-reference/business/transfers-bank-list"
+            ]
+          },
+          {
+            "group": "Transactions",
+            "pages": [
+              "api-reference/business/transactions-list",
+              "api-reference/business/transactions-get"
+            ]
+          },
+          {
+            "group": "Wallets",
+            "pages": [
+              "api-reference/business/wallets-create",
+              "api-reference/business/wallets-list",
+              "api-reference/business/wallets-get",
+              "api-reference/business/wallets-balance",
+              "api-reference/business/wallets-float",
+              "api-reference/business/wallets-parent"
+            ]
+          },
+          {
+            "group": "Fees",
+            "pages": [
+              "api-reference/business/fees-create",
+              "api-reference/business/fees-list",
+              "api-reference/business/fees-get",
+              "api-reference/business/fees-update",
+              "api-reference/business/fees-delete",
+              "api-reference/business/fees-compute"
             ]
           }
         ]
@@ -64,8 +120,8 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/images/logo-light-theme.png",
+    "dark": "/images/logo-dark-theme.png"
   },
   "navbar": {
     "links": [

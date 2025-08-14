@@ -1,0 +1,44 @@
+---
+title: 'Get Transactions for Business'
+description: 'Retrieve list of transactions with comprehensive filtering and pagination'
+openapi: 'GET /business/transactions'
+---
+
+## Overview
+
+Retrieves a list of transactions for the business associated with the authenticated API client. Supports comprehensive filtering, pagination, and cursor-based navigation.
+
+## Authentication
+
+- **Type**: API Client
+- **Headers**: 
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Query Parameters
+
+- **wallet_id**: Filter by specific customer wallet ID (optional)
+- **type**: Filter by transaction type - INFLOW, OUTFLOW, INTERNAL (optional)
+- **method**: Filter by transaction method - API, DASHBOARD (optional)
+- **status**: Filter by transaction status (optional)
+- **from**: Start date for transactions in ISO format (optional)
+- **to**: End date for transactions in ISO format (optional)
+- **cursor**: Transaction reference for pagination (optional)
+- **page_size**: Number of transactions to return, minimum 20 (optional, default: 20)
+
+## Response
+
+Returns paginated list of transactions with comprehensive metadata including balances, payment provider details, and sender information.
+
+## Error Handling
+
+- **400**: Invalid query parameters
+- **401**: Invalid client credentials
+- **403**: API client not authorized for the business
+
+## Features
+
+- Comprehensive filtering options
+- Cursor-based pagination
+- Rich transaction metadata
+- Balance tracking information

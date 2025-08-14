@@ -1,0 +1,31 @@
+---
+title: 'Get Business Wallet Balance'
+description: 'Retrieves the balance of the primary wallet for the business associated with the authenticated API client'
+openapi: 'GET /business/wallets/wallet_balance'
+---
+
+## Overview
+
+Retrieves the balance of the primary wallet for the business associated with the authenticated API client. This endpoint provides real-time balance information for business operations and financial monitoring.
+
+## Authentication
+
+- **Type**: API Client
+- **Headers**:
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Prerequisites
+
+- API client must be authenticated and authorized for the business
+- Business must have an active primary wallet
+
+## Response
+
+Returns business information and current wallet balance for financial tracking and decision making.
+
+## Error Handling
+
+- **401**: Invalid client ID or secret
+- **403**: API client not authorized for the business
+- **404**: Business or its wallet not found

@@ -1,0 +1,37 @@
+---
+title: 'Name Enquiry'
+description: 'Query account name for beneficiary account number and bank code'
+openapi: 'POST /business/transfers/name-enquiry'
+---
+
+## Overview
+
+Queries the account name for a beneficiary account number and bank code. This endpoint is used to verify beneficiary details before initiating transfers.
+
+## Authentication
+
+- **Type**: API Client
+- **Headers**: 
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Query Parameters
+
+- **account_number**: Beneficiary account number (required, string)
+- **bank_code**: Bank code (required, string)
+
+## Response
+
+Returns account details including account number, name, session ID, and bank name.
+
+## Error Handling
+
+- **400**: Invalid account number or bank code
+- **401**: Invalid client credentials
+- **404**: Account not found
+
+## Use Cases
+
+- Verify beneficiary account details before transfers
+- Prevent transfer errors due to incorrect account information
+- Compliance and audit requirements

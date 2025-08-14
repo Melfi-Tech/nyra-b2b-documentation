@@ -1,0 +1,89 @@
+---
+title: 'Get All Businesses'
+openapi: 'GET /business/all'
+---
+
+<RequestExample>
+```bash cURL
+curl -X GET 'https://api.nyrawallet.com/business/all' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.nyrawallet.com/business/all', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer YOUR_JWT_TOKEN'
+  }
+});
+```
+
+```python Python
+import requests
+
+response = requests.get('https://api.nyrawallet.com/business/all',
+  headers={
+    'Authorization': 'Bearer YOUR_JWT_TOKEN'
+  }
+)
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success
+{
+  "success": true,
+  "data": [
+    {
+      "id": "business_123",
+      "name": "Acme Corporation",
+      "address": "123 Business St, City, State 12345",
+      "business_type": "Technology",
+      "creator": {
+        "user_id": "user_456"
+      }
+    },
+    {
+      "id": "business_789",
+      "name": "Global Solutions",
+      "address": "456 Corporate Ave, City, State 12345",
+      "business_type": "Service",
+      "creator": {
+        "user_id": "user_456"
+      }
+    }
+  ],
+  "message": "All businesses fetched successfully"
+}
+```
+
+```json Error
+{
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Invalid JWT token"
+  }
+}
+```
+</ResponseExample>
+
+## Authentication
+
+<Warning>
+  This endpoint requires a valid JWT token for authentication.
+</Warning>
+
+- **Method**: JWT token in `Authorization: Bearer <token>` header
+- **Scope**: Returns only businesses owned by the authenticated user
+- **Permissions**: Full access to business data for owned businesses
+
+## Response Details
+
+The response includes an array of all businesses owned by the authenticated user, with each business containing:
+- **ID**: Unique business identifier
+- **Name**: Business name
+- **Address**: Business address
+- **Business Type**: Predefined business category
+- **Creator**: User ID of the business owner
+

@@ -6,7 +6,7 @@ icon: "key"
 
 ## Authentication in Nyra Wallet
 
-Nyra Wallet provides secure authentication for your digital wallet needs. Our authentication system ensures that only authorized users can access their wallets and perform transactions.
+Nyra Wallet provides a two-tier authentication system for secure business management and API access. Our authentication system ensures that only authorized users and API clients can access business data and perform operations.
 
 ## Authentication Methods
 
@@ -19,6 +19,19 @@ Nyra Wallet provides secure authentication for your digital wallet needs. Our au
   Authenticate existing users with secure login.
 </Card>
 </CardGroup>
+
+## Authentication Tiers
+
+### 1. User Authentication (JWT)
+- **Purpose**: Manage businesses and create API clients
+- **Method**: JWT tokens via `Authorization: Bearer <token>` header
+- **Scope**: Full access to business management operations
+
+### 2. API Client Authentication
+- **Purpose**: Access business data via API clients
+- **Method**: Client ID + Client Secret authentication
+- **Scope**: Limited access to specific business data
+- **Headers**: `x-client-id` + `Authorization: Bearer <client_secret>`
 
 ## Security Features
 
@@ -33,7 +46,9 @@ To begin using authentication in your application:
 
 1. **Register a new user** using the registration endpoint
 2. **Authenticate users** with the login endpoint
-3. **Use the returned JWT token** for subsequent API calls
+3. **Use the returned JWT token** for business management operations
+4. **Create API clients** for your businesses to enable third-party integrations
+5. **Use client credentials** for API client authentication
 
 <Note>
   All authentication endpoints require HTTPS and follow OAuth 2.0 standards for security best practices.
@@ -41,6 +56,10 @@ To begin using authentication in your application:
 
 ## Next Steps
 
+<Card title="Business Management" icon="building" href="/business/overview">
+  Learn how to manage businesses and create API clients.
+</Card>
+
 <Card title="API Reference" icon="terminal" href="/api-reference/auth/login">
-  View the complete API documentation for authentication endpoints.
+  View the complete API documentation for all endpoints.
 </Card>

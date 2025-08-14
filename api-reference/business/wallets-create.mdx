@@ -1,0 +1,36 @@
+---
+title: 'Create Wallet for Business Customer'
+description: 'Creates a new wallet for a customer under the business associated with the authenticated API client'
+openapi: 'POST /business/wallets'
+---
+
+## Overview
+
+Creates a new wallet for a customer under the business associated with the authenticated API client. This endpoint is used to provision customer sub-wallets for business operations.
+
+## Authentication
+
+- **Type**: API Client
+- **Headers**:
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Prerequisites
+
+- API client must be authenticated and authorized for the business
+- Valid customer information must be provided
+- BVN must be exactly 11 digits
+
+## Request Body
+
+The request requires comprehensive customer information including personal details, address, and BVN verification.
+
+## Response
+
+Returns wallet details including wallet ID, account number, bank name, and ownership information.
+
+## Error Handling
+
+- **400**: Invalid payload or BVN not 11 digits
+- **401**: Invalid client ID or secret
+- **403**: API client not authorized for the business

@@ -1,0 +1,76 @@
+---
+title: 'Register Business'
+openapi: 'POST /business/register'
+---
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.nyrawallet.com/business/register' \
+  -H 'Authorization: Bearer YOUR_JWT_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "business_name": "Acme Corporation",
+    "address": "123 Business St, City, State 12345",
+    "business_type": "Technology"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.nyrawallet.com/business/register', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_JWT_TOKEN',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    business_name: 'Acme Corporation',
+    address: '123 Business St, City, State 12345',
+    business_type: 'Technology'
+  })
+});
+```
+
+```python Python
+import requests
+
+response = requests.post('https://api.nyrawallet.com/business/register', 
+  headers={
+    'Authorization': 'Bearer YOUR_JWT_TOKEN',
+    'Content-Type': 'application/json'
+  },
+  json={
+    'business_name': 'Acme Corporation',
+    'address': '123 Business St, City, State 12345',
+    'business_type': 'Technology'
+  }
+)
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success
+{
+  "success": true,
+  "data": {
+    "id": "business_123",
+    "name": "Acme Corporation",
+    "address": "123 Business St, City, State 12345",
+    "business_type": "Technology",
+    "creator": {
+      "user_id": "user_456"
+    }
+  },
+  "message": "Business registered successfully"
+}
+```
+
+```json Error
+{
+  "success": false,
+  "error": {
+    "code": "INVALID_BUSINESS_TYPE",
+    "message": "Business type must be one of the predefined values"
+  }
+}
+```
+</ResponseExample>

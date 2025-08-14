@@ -1,0 +1,44 @@
+---
+title: 'Get Transaction by ID'
+description: 'Retrieve specific transaction details by transaction ID'
+openapi: 'GET /business/transactions/{transaction_id}'
+---
+
+## Overview
+
+Retrieves a specific transaction by its ID for the business associated with the authenticated API client. Provides detailed transaction information for individual transaction lookup.
+
+## Authentication
+
+- **Type**: API Client
+- **Headers**: 
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Path Parameters
+
+- **transaction_id**: The unique identifier of the transaction to retrieve (required, string)
+
+## Response
+
+Returns detailed transaction information including:
+- Transaction metadata (ID, reference, timestamps)
+- Amount and balance information
+- Transaction type and category
+- Status and payment provider details
+- Sender/recipient information
+- Associated wallet and business data
+
+## Error Handling
+
+- **400**: Invalid transaction ID
+- **401**: Invalid client credentials
+- **403**: API client not authorized for the business
+- **404**: Transaction not found
+
+## Use Cases
+
+- Individual transaction lookup
+- Transaction dispute resolution
+- Customer support inquiries
+- Audit and compliance verification

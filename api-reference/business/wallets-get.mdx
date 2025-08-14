@@ -1,0 +1,36 @@
+---
+title: 'Get Sub-Wallet Details'
+description: 'Retrieves details of a specific sub-wallet for the business associated with the authenticated API client'
+openapi: 'GET /business/wallets/{walletId}'
+---
+
+## Overview
+
+Retrieves details of a specific sub-wallet (customer or float) for the business associated with the authenticated API client. This endpoint provides comprehensive wallet information for individual account lookup.
+
+## Authentication
+
+- **Type**: API Client
+- **Headers**:
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Path Parameters
+
+- **walletId**: The ID of the wallet to retrieve (required, string)
+
+## Prerequisites
+
+- API client must be authenticated and authorized for the business
+- Wallet must exist and belong to the business
+
+## Response
+
+Returns detailed wallet information including account number, bank name, ownership details, and status information.
+
+## Error Handling
+
+- **400**: Invalid wallet ID
+- **401**: Invalid client ID or secret
+- **403**: API client not authorized for the business
+- **404**: Wallet not found

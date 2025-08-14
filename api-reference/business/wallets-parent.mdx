@@ -1,0 +1,35 @@
+---
+title: 'Get Parent Wallet Details'
+description: 'Retrieves details of the parent wallet for a business, accessible by an authenticated user'
+openapi: 'GET /business/{businessId}/wallet'
+---
+
+## Overview
+
+Retrieves details of the parent wallet for a business, accessible by an authenticated user. This endpoint provides access to the main business wallet information for user management and monitoring.
+
+## Authentication
+
+- **Type**: JWT Token
+- **Headers**:
+  - `Authorization`: `Bearer <jwt_token>` (required, string)
+
+## Path Parameters
+
+- **businessId**: The ID of the business (required, string)
+
+## Prerequisites
+
+- User must be authenticated with valid JWT token
+- User must own or have access to the business
+- Business must have an active parent wallet
+
+## Response
+
+Returns comprehensive wallet information including business details, owner information, and wallet status.
+
+## Error Handling
+
+- **400**: Invalid businessId
+- **401**: Invalid JWT token
+- **404**: Wallet or business not found

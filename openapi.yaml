@@ -1,0 +1,3357 @@
+openapi: 3.0.3
+info:
+  title: Nyra Wallet API
+  description: API for Nyra Wallet business management and authentication
+  version: 1.0.0
+  contact:
+    name: Nyra Wallet Support
+    email: hi@mintlify.com
+
+servers:
+  - url: https://api.staging.nyrawallet.com/api/v2
+    description: Staging server
+  - url: https://api.nyrawallet.com/api/v2
+    description: Production server
+
+paths:
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate user with email and password
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                password:
+                  type: string
+                  description: User's password
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "user_123"
+                          email:
+                            type: string
+                            example: "user@example.com"
+                          full_name:
+                            type: string
+                            example: "John Doe"
+                          created_at:
+                            type: string
+                            format: date-time
+                            example: "2024-01-15T10:30:00Z"
+                      token:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                      expires_in:
+                        type: integer
+                        example: 86400
+                '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                     example: "Bad Request"
+                   message:
+                     type: string
+                     example: "Invalid email or password"
+
+  /auth/register:
+    post:
+      summary: User registration
+      description: Register a new user account
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - full_name
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                password:
+                  type: string
+                  description: User's password
+                full_name:
+                  type: string
+                  description: User's full name
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "user_123"
+                          email:
+                            type: string
+                            example: "user@example.com"
+                          full_name:
+                            type: string
+                            example: "John Doe"
+                          created_at:
+                            type: string
+                            format: date-time
+                            example: "2024-01-15T10:30:00Z"
+                      token:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                      expires_in:
+                        type: integer
+                        example: 86400
+                '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                     type: boolean
+                     example: false
+                   error:
+                     type: string
+                     example: "Bad Request"
+                   message:
+                     type: string
+                     example: "Invalid request data"
+
+  /business/register:
+    post:
+      summary: Register business
+      description: Register a new business for the authenticated user
+      tags:
+        - Business
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - business_name
+                - address
+                - business_type
+              properties:
+                business_name:
+                  type: string
+                  description: The name of the business
+                address:
+                  type: string
+                  description: The business address
+                business_type:
+                  type: string
+                  description: The type of business (must match predefined BusinessType enum)
+      responses:
+        '201':
+          description: Business created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Business registered successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "business_123"
+                      name:
+                        type: string
+                        example: "Acme Corporation"
+                      address:
+                        type: string
+                        example: "123 Business St, City, State 12345"
+                      business_type:
+                        type: string
+                        example: "Technology"
+                      creator:
+                        type: object
+                        properties:
+                          user_id:
+                            type: string
+                            example: "user_456"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2024-01-15T10:30:00Z"
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad Request - If the request payload is invalid or business creation fails
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   statusCode:
+                     type: integer
+                     example: 400
+                   status:
+                     type: string
+                     example: "error"
+                   success:
+                     type: boolean
+                     example: false
+                   error:
+                     type: string
+                     example: "Bad Request"
+                   message:
+                     type: string
+                     example: "Invalid request payload or business creation failed"
+
+  /business/all:
+    get:
+      summary: List all businesses
+      description: Get all businesses for the authenticated user
+      tags:
+        - Business
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of businesses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "All businesses fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "business_123"
+                        name:
+                          type: string
+                          example: "Acme Corporation"
+                        address:
+                          type: string
+                          example: "123 Business St, City, State 12345"
+                        business_type:
+                          type: string
+                          example: "Technology"
+                        creator:
+                          type: object
+                          properties:
+                            user_id:
+                              type: string
+                              example: "user_456"
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2024-01-15T10:30:00Z"
+        '400':
+          description: Bad Request - If retrieval fails
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   statusCode:
+                     type: integer
+                     example: 400
+                   status:
+                     type: string
+                     example: "error"
+                   success:
+                     type: boolean
+                     example: false
+                   error:
+                     type: string
+                     example: "Bad Request"
+                   message:
+                     type: string
+                     example: "Failed to retrieve businesses"
+        '401':
+          description: Unauthorized
+
+  /business/{businessId}:
+    get:
+      summary: Get business details
+      description: Get details of a specific business
+      tags:
+        - Business
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Business ID
+      responses:
+        '200':
+          description: Business details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Business fetched successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "business_123"
+                      name:
+                        type: string
+                        example: "Acme Corporation"
+                      address:
+                        type: string
+                        example: "123 Business St, City, State 12345"
+                      business_type:
+                        type: string
+                        example: "Technology"
+                      creator:
+                        type: object
+                        properties:
+                          user_id:
+                            type: string
+                            example: "user_456"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2024-01-15T10:30:00Z"
+                 '400':
+           description: Bad Request - If the business ID is invalid
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   statusCode:
+                     type: integer
+                     example: 400
+                   status:
+                     type: string
+                     example: "error"
+                   success:
+                     type: boolean
+                     example: false
+                   error:
+                     type: string
+                     example: "Bad Request"
+                   message:
+                     type: string
+                     example: "Invalid business ID format"
+        '401':
+          description: Unauthorized
+                 '403':
+           description: Forbidden - If the user does not own the business
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   statusCode:
+                     type: integer
+                     example: 403
+                   status:
+                     type: string
+                     example: "error"
+                   success:
+                     type: boolean
+                     example: false
+                   error:
+                     type: string
+                     example: "Forbidden"
+                   message:
+                     type: string
+                     example: "You do not have permission to access this business"
+        '404':
+          description: Business not found
+
+  /business/1/{businessId}:
+    get:
+      summary: Get a Business (API Client)
+      description: Retrieves details of a specific business by ID for an API client.
+      tags:
+        - Business
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the business
+      responses:
+        '200':
+          description: Business details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Business fetched successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "business_123"
+                      name:
+                        type: string
+                        example: "Acme Corporation"
+                      address:
+                        type: string
+                        example: "123 Business St, City, State 12345"
+                      business_type:
+                        type: string
+                        example: "Technology"
+                      creator:
+                        type: object
+                        properties:
+                          user_id:
+                            type: string
+                            example: "user_456"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2024-01-15T10:30:00Z"
+        '400':
+          description: Bad Request - If the business ID is invalid
+        '401':
+          description: Unauthorized - If the client ID or secret is invalid
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "API client not authorized for the business"
+        '404':
+          description: Not Found - If the business is not found
+
+  /business/{businessId}/api-clients:
+    post:
+      summary: Create API client
+      description: Create a new API client for a business
+      tags:
+        - Business
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Business ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - app_name
+              properties:
+                app_name:
+                  type: string
+                  description: The name of the application or service
+      responses:
+        '201':
+          description: API client created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "API client created successfully. Please save your secret key, it will not be shown again."
+                  data:
+                    type: object
+                    properties:
+                      client_id:
+                        type: string
+                        example: "client_abc123"
+                      client_secret:
+                        type: string
+                        example: "secret_xyz789"
+        '401':
+          description: Unauthorized
+        '404':
+          description: Business not found
+
+    get:
+      summary: Get API client details
+      description: Retrieves the API client details for the specified business. The client secret is not included for security reasons.
+      tags:
+        - Business
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Business ID
+      responses:
+        '200':
+          description: API client details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "API client retrieved successfully."
+                  data:
+                    type: object
+                    properties:
+                      appName:
+                        type: string
+                        example: "My Integration App"
+                      clientId:
+                        type: string
+                        example: "client_abc123"
+                      environment:
+                        type: string
+                        enum: ["LIVE", "TEST"]
+                        example: "LIVE"
+                      isActive:
+                        type: boolean
+                        example: true
+                      lastUsedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                        example: "2024-01-15T10:30:00Z"
+                      businessId:
+                        type: string
+                        example: "business_123"
+                      businessName:
+                        type: string
+                        example: "Acme Corporation"
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: "2024-01-15T10:30:00Z"
+                      _v:
+                        type: integer
+                        example: 0
+                 '401':
+           description: Unauthorized
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   statusCode:
+                     type: integer
+                     example: 401
+                   status:
+                     type: string
+                     example: "error"
+                   success:
+                     type: boolean
+                     example: false
+                   error:
+                     type: string
+                     example: "Unauthorized"
+                   message:
+                     type: string
+                     example: "Invalid client ID or secret"
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "API client not authorized for the business"
+        '404':
+          description: Business or API client not found
+
+  /business/wallets:
+    post:
+      summary: Create wallet for business customer
+      description: Creates a new wallet for a customer under the business associated with the authenticated API client
+      tags:
+        - Wallets
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first_name
+                - last_name
+                - dob
+                - gender
+                - title
+                - address_line_1
+                - city
+                - country
+                - phone_number
+                - email
+                - bvn
+              properties:
+                first_name:
+                  type: string
+                  description: Customer's first name
+                last_name:
+                  type: string
+                  description: Customer's last name
+                name_on_account:
+                  type: string
+                  description: Name on the account
+                middlename:
+                  type: string
+                  description: Customer's middle name
+                dob:
+                  type: string
+                  format: date
+                  description: Date of birth in ISO format
+                gender:
+                  type: string
+                  description: Customer's gender
+                title:
+                  type: string
+                  description: Customer's title
+                address_line_1:
+                  type: string
+                  description: Primary address line
+                address_line_2:
+                  type: string
+                  description: Secondary address line
+                city:
+                  type: string
+                  description: City
+                country:
+                  type: string
+                  description: Country
+                phone_number:
+                  type: string
+                  description: Valid phone number
+                email:
+                  type: string
+                  format: email
+                  description: Valid email address
+                bvn:
+                  type: string
+                  minLength: 11
+                  maxLength: 11
+                  description: Bank Verification Number (11-digit string)
+      responses:
+        '201':
+          description: Wallet created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Wallet created successfully"
+                  data:
+                    type: object
+                    properties:
+                      wallet_id:
+                        type: string
+                        example: "wallet_123"
+                      account_number:
+                        type: string
+                        example: "1234567890"
+                      bank_name:
+                        type: string
+                        example: "Nyra Bank"
+                      owners_fullname:
+                        type: string
+                        example: "John Doe"
+                      frozen:
+                        type: boolean
+                        example: false
+                      business_id:
+                        type: string
+                        example: "business_123"
+                      isFloat:
+                        type: boolean
+                        example: false
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2024-01-15T10:30:00Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2024-01-15T10:30:00Z"
+        '400':
+          description: Bad Request - Invalid payload or BVN not 11 digits
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+        '403':
+          description: Forbidden - API client not authorized for the business
+
+  /business/wallets/all:
+    get:
+      summary: Get all customer sub-wallets
+      description: Retrieves all customer sub-wallets for the business associated with the authenticated API client. Excludes business float wallets.
+      tags:
+        - Wallets
+      security:
+        - ClientAuth: []
+      responses:
+        '200':
+          description: Sub wallets fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Sub wallets fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        wallet_id:
+                          type: string
+                          example: "wallet_123"
+                        account_number:
+                          type: string
+                          example: "1234567890"
+                        bank_name:
+                          type: string
+                          example: "Nyra Bank"
+                        owners_fullname:
+                          type: string
+                          example: "John Doe"
+                        frozen:
+                          type: boolean
+                          example: false
+                        business_id:
+                          type: string
+                          example: "business_123"
+                        isFloat:
+                          type: boolean
+                          example: false
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2024-01-15T10:30:00Z"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2024-01-15T10:30:00Z"
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client ID or secret"
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "API client not authorized for the business"
+
+  /business/wallets/{walletId}:
+    get:
+      summary: Get Sub-Wallet Details
+      description: Retrieves details of a specific sub-wallet (customer or float) for the business associated with the authenticated API client.
+      tags:
+        - Wallets
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: walletId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the wallet
+      responses:
+        '200':
+          description: Wallet fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Wallet fetched successfully"
+                  data:
+                    type: object
+                    properties:
+                      wallet_id:
+                        type: string
+                        example: "wallet_123"
+                      account_number:
+                        type: string
+                        example: "1234567890"
+                      bank_name:
+                        type: string
+                        example: "Nyra Bank"
+                      owners_fullname:
+                        type: string
+                        example: "John Doe"
+                      frozen:
+                        type: boolean
+                        example: false
+                      business_id:
+                        type: string
+                        example: "business_123"
+                      isFloat:
+                        type: boolean
+                        example: false
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2024-01-15T10:30:00Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2024-01-15T10:30:00Z"
+        '400':
+          description: Bad Request - Invalid wallet ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  message:
+                    type: string
+                    example: "Invalid wallet ID format"
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client ID or secret"
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "API client not authorized for the business"
+        '404':
+          description: Not Found - Wallet not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Wallet not found"
+
+  /business/wallets/wallet_balance:
+    get:
+      summary: Get Business Wallet Balance
+      description: Retrieves the balance of the primary wallet for the business associated with the authenticated API client.
+      tags:
+        - Wallets
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      responses:
+        '200':
+          description: Wallet balance fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Wallet balance fetched successfully"
+                  data:
+                    type: object
+                    properties:
+                      businessId:
+                        type: string
+                        example: "business_123"
+                      businessName:
+                        type: string
+                        example: "Acme Corporation"
+                      balance:
+                        type: number
+                        example: 50000.00
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client ID or secret"
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "API client not authorized for the business"
+        '404':
+          description: Not Found - Business or its wallet not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Business or its wallet not found"
+
+  /business/wallets/float:
+    get:
+      summary: Get Business Float Wallets
+      description: Retrieves all float wallets for the business associated with the authenticated API client.
+      tags:
+        - Wallets
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      responses:
+        '200':
+          description: Business float wallets fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Business float wallets fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        wallet_id:
+                          type: string
+                          example: "wallet_123"
+                        account_number:
+                          type: string
+                          example: "1234567890"
+                        bank_name:
+                          type: string
+                          example: "Nyra Bank"
+                        owners_fullname:
+                          type: string
+                          example: "John Doe"
+                        frozen:
+                          type: boolean
+                          example: false
+                        business_id:
+                          type: string
+                          example: "business_123"
+                        isFloat:
+                          type: boolean
+                          example: true
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2024-01-15T10:30:00Z"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2024-01-15T10:30:00Z"
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client ID or secret"
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 403
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "API client not authorized for the business"
+        '404':
+          description: Not Found - Business not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Business not found"
+
+  /business/{businessId}/wallet:
+    get:
+      summary: Get Parent Wallet Details
+      description: Retrieves details of the parent wallet for a business, accessible by an authenticated user.
+      tags:
+        - Wallets
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Business ID
+      responses:
+        '200':
+          description: Wallet retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Wallet retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      wallet_id:
+                        type: string
+                        example: "wallet_54321"
+                      account_number:
+                        type: string
+                        example: "1234567890"
+                      business:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "business_12345"
+                          name:
+                            type: string
+                            example: "Business Inc"
+                      owner:
+                        type: object
+                        properties:
+                          user_id:
+                            type: string
+                            example: "user_12345"
+                          email:
+                            type: string
+                            example: "user@example.com"
+                      frozen:
+                        type: boolean
+                        example: false
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-26T04:22:00.000Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-26T04:22:00.000Z"
+        '400':
+          description: Bad Request - Invalid businessId
+        '401':
+          description: Unauthorized - Invalid JWT token
+        '404':
+          description: Not Found - Wallet or business not found
+
+  /business/{businessId}/wallet/create-pin:
+    post:
+      summary: Create transaction PIN
+      description: Sets a 4-digit transaction PIN for the business wallet, required for dashboard transfers
+      tags:
+        - Transactions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Business ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - new_pin
+              properties:
+                new_pin:
+                  type: string
+                  pattern: '^[0-9]{4}$'
+                  description: 4-digit PIN (must be exactly 4 digits)
+      responses:
+        '200':
+          description: PIN created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "pin created successfully!"
+                  data:
+                    type: boolean
+                    example: true
+        '400':
+          description: Bad Request - Invalid PIN format (must be 4 digits)
+        '401':
+          description: Unauthorized - Invalid JWT token
+        '404':
+          description: Not Found - Business not found
+
+  /business/{businessId}/wallet/update-pin:
+    post:
+      summary: Update transaction PIN
+      description: Updates the 4-digit transaction PIN for the business wallet. Requires control panel settings (CHANGE_PIN) to be enabled.
+      tags:
+        - Transactions
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Business ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - old_pin
+                - new_pin
+              properties:
+                old_pin:
+                  type: string
+                  pattern: '^[0-9]{4}$'
+                  description: Current 4-digit PIN (must be exactly 4 digits)
+                new_pin:
+                  type: string
+                  pattern: '^[0-9]{4}$'
+                  description: New 4-digit PIN (must be exactly 4 digits)
+      responses:
+        '200':
+          description: PIN updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "pin updated successfully!"
+                  data:
+                    type: boolean
+                    example: true
+        '400':
+          description: Bad Request - Invalid PIN format or incorrect old PIN
+        '401':
+          description: Unauthorized - Invalid JWT token or control panel settings not enabled
+        '404':
+          description: Not Found - Business not found
+
+  /business/transfers:
+    post:
+      summary: Initiate Business Transfer (API)
+      description: Initiates a transfer from a business float wallet via API
+      tags:
+        - Business Transfers
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - beneficiary
+                - source_account_number
+                - amount
+              properties:
+                beneficiary:
+                  type: object
+                  required:
+                    - account_name
+                    - account_number
+                    - bank_code
+                  properties:
+                    account_name:
+                      type: string
+                      description: Beneficiary name
+                      example: "John Doe"
+                    account_number:
+                      type: string
+                      description: Beneficiary account number
+                      example: "1234567890"
+                    bank_code:
+                      type: string
+                      description: Beneficiary bank code
+                      example: "044"
+                source_account_number:
+                  type: string
+                  description: Business float account number
+                  example: "9876543210"
+                amount:
+                  type: number
+                  minimum: 100
+                  description: Transfer amount (minimum 100)
+                  example: 1000
+                description:
+                  type: string
+                  description: Transfer narration
+                  example: "Payment for services"
+                sender_name:
+                  type: string
+                  description: Custom sender name
+                  example: "Business Inc"
+      responses:
+        '201':
+          description: Transfer initiated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Transfer initiated successfully"
+                  data:
+                    type: object
+                    properties:
+                      transaction_id:
+                        type: string
+                        example: "tx_123456789"
+                      transaction_type:
+                        type: string
+                        example: "DEBIT"
+                      transaction_category:
+                        type: string
+                        example: "WALLET_TRANSFER"
+                      transaction_reference:
+                        type: string
+                        example: "TX123456789"
+                      amount:
+                        type: number
+                        example: -1000
+                      charge:
+                        type: number
+                        example: -50
+                      description:
+                        type: string
+                        example: "Business Inc transfer to John Doe"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-26T04:25:00.000Z"
+        '400':
+          description: Bad Request - Invalid payload, insufficient funds, or non-float wallet
+        '401':
+          description: Unauthorized - Invalid client credentials
+        '404':
+          description: Not Found - Business or wallet not found
+
+  /business/transfers/dashboard:
+    post:
+      summary: Initiate Business Transfer (Dashboard)
+      description: Initiates a transfer from a business float wallet via the dashboard. Requires a 4-digit transaction PIN.
+      tags:
+        - Business Transfers
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - beneficiary
+                - source_account_number
+                - amount
+                - wallet_pin
+              properties:
+                beneficiary:
+                  type: object
+                  required:
+                    - account_name
+                    - account_number
+                    - bank_code
+                  properties:
+                    account_name:
+                      type: string
+                      description: Beneficiary name
+                      example: "John Doe"
+                    account_number:
+                      type: string
+                      description: Beneficiary account number
+                      example: "1234567890"
+                    bank_code:
+                      type: string
+                      description: Beneficiary bank code
+                      example: "044"
+                source_account_number:
+                  type: string
+                  description: Business float account number
+                  example: "9876543210"
+                amount:
+                  type: number
+                  minimum: 100
+                  description: Transfer amount (minimum 100)
+                  example: 1000
+                description:
+                  type: string
+                  description: Transfer narration
+                  example: "Payment for services"
+                sender_name:
+                  type: string
+                  description: Custom sender name
+                  example: "Business Inc"
+                wallet_pin:
+                  type: string
+                  pattern: '^[0-9]{4}$'
+                  description: 4-digit PIN
+                  example: "1234"
+      responses:
+        '201':
+          description: Transfer initiated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Transfer initiated successfully"
+                  data:
+                    type: object
+                    properties:
+                      transaction_id:
+                        type: string
+                        example: "tx_123456789"
+                      transaction_type:
+                        type: string
+                        example: "DEBIT"
+                      transaction_category:
+                        type: string
+                        example: "WALLET_TRANSFER"
+                      transaction_reference:
+                        type: string
+                        example: "TX123456789"
+                      amount:
+                        type: number
+                        example: -1000
+                      charge:
+                        type: number
+                        example: -50
+                      description:
+                        type: string
+                        example: "Business Inc transfer to John Doe"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-26T04:25:00.000Z"
+        '400':
+          description: Bad Request - Invalid PIN, insufficient funds, or non-float wallet
+        '401':
+          description: Unauthorized - Invalid JWT token or missing PIN
+        '404':
+          description: Not Found - Business or wallet not found
+
+  /business/transfers/name-enquiry:
+    post:
+      summary: Name Enquiry
+      description: Queries the account name for a beneficiary account number and bank code
+      tags:
+        - Business Transfers
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: account_number
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Beneficiary account number
+          example: "1234567890"
+        - name: bank_code
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Bank code
+          example: "044"
+      responses:
+        '200':
+          description: Name enquiry successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Name enquiry successful"
+                  data:
+                    type: object
+                    properties:
+                      account:
+                        type: object
+                        properties:
+                          number:
+                            type: string
+                            example: "1234567890"
+                          name:
+                            type: string
+                            example: "John Doe"
+                      sessionId:
+                        type: string
+                        example: "session_12345"
+                      bank_name:
+                        type: string
+                        example: "Access Bank"
+        '400':
+          description: Bad Request - Invalid account number or bank code
+        '401':
+          description: Unauthorized - Invalid client credentials
+        '404':
+          description: Not Found - Account not found
+
+  /business/transfers/bank/list:
+    get:
+      summary: List Available Banks
+      description: Retrieves a list of banks available for transfers
+      tags:
+        - Business Transfers
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      responses:
+        '200':
+          description: Banks listed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Banks listed successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        bank_code:
+                          type: string
+                          example: "044"
+                        bank_name:
+                          type: string
+                          example: "Access Bank"
+        '400':
+          description: Bad Request - Invalid request
+        '401':
+          description: Unauthorized - Invalid client credentials
+
+  /business/transactions:
+    get:
+      summary: Get Transactions for Business
+      description: Retrieves a list of transactions for the business associated with the authenticated API client. Supports filtering by wallet, type, method, status, and date range, as well as pagination and cursor-based navigation.
+      tags:
+        - Business Transactions
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: wallet_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by a specific customer's wallet ID
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [INFLOW, OUTFLOW, INTERNAL]
+          description: Filter by transaction type
+        - name: method
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [API, DASHBOARD]
+          description: Filter by transaction method
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by transaction status
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Start date for transactions (ISO format)
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: End date for transactions (ISO format)
+        - name: cursor
+          in: query
+          required: false
+          schema:
+            type: string
+          description: A transaction reference to paginate results before this transaction
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 20
+            default: 20
+          description: Number of transactions to return
+      responses:
+        '200':
+          description: Transactions fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  status:
+                    type: string
+                    example: "success"
+                  success:
+                    type: boolean
+                    example: true
+                  error:
+                    type: string
+                    example: ""
+                  message:
+                    type: string
+                    example: "Transactions fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2025-07-21T11:28:10.652Z"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2025-07-21T11:28:10.652Z"
+                        transaction_id:
+                          type: string
+                          example: "TXN-01K0PF9EHMHXTW3NECYJC9H41Y"
+                        transaction_type:
+                          type: string
+                          example: "CREDIT"
+                        transaction_category:
+                          type: string
+                          example: "wallet funding"
+                        transaction_status:
+                          type: string
+                          example: "successful"
+                        balance_before:
+                          type: string
+                          example: "20000.00"
+                        balance_after:
+                          type: string
+                          example: "30000.00"
+                        transaction_reference:
+                          type: string
+                          example: "TXN-01K0PF9EHMHXTW3NECYJC9H41Y"
+                        description:
+                          type: string
+                          example: " Payment for invoice #INV001"
+                        amount:
+                          type: string
+                          example: "10000.00"
+                        payment_provider:
+                          type: string
+                          example: "Polaris"
+                        charge:
+                          type: string
+                          example: "0.00"
+                        meta:
+                          type: object
+                          properties:
+                            data:
+                              type: object
+                              properties:
+                                sender:
+                                  type: object
+                                  properties:
+                                    name:
+                                      type: string
+                                      example: "John Doe"
+                                    merchant:
+                                      type: string
+                                      example: "Polaris"
+                                    bank_name:
+                                      type: string
+                                      example: "GTBank"
+                                    account_no:
+                                      type: string
+                                      example: "0987654321"
+        '400':
+          description: Bad Request - If any query parameter is invalid
+        '401':
+          description: Unauthorized - If the client ID or secret is invalid
+        '403':
+          description: Forbidden - If the API client is not authorized for the business
+
+  /business/transactions/{transaction_id}:
+    get:
+      summary: Get Transaction by ID for Business
+      description: Retrieves a specific transaction by its ID for the business associated with the authenticated API client.
+      tags:
+        - Business Transactions
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: transaction_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the transaction to retrieve
+      responses:
+        '200':
+          description: Transaction fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  status:
+                    type: string
+                    example: "success"
+                  success:
+                    type: boolean
+                    example: true
+                  error:
+                    type: string
+                    example: ""
+                  message:
+                    type: string
+                    example: "Transaction fetched successfully"
+                  data:
+                    type: object
+                    properties:
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-21T11:28:10.652Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-21T11:28:10.652Z"
+                      transaction_id:
+                        type: string
+                        example: "TXN-01K0PF9EHMHXTW3NECYJC9H41Y"
+                      transaction_type:
+                        type: string
+                        example: "CREDIT"
+                      transaction_category:
+                        type: string
+                        example: "wallet funding"
+                      transaction_status:
+                        type: string
+                        example: "successful"
+                      balance_before:
+                        type: string
+                        example: "20000.00"
+                      balance_after:
+                        type: string
+                        example: "30000.00"
+                      transaction_reference:
+                        type: string
+                        example: "TXN-01K0PF9EHMHXTW3NECYJC9H41Y"
+                      description:
+                        type: string
+                        example: " Payment for invoice #INV001"
+                      amount:
+                        type: string
+                        example: "10000.00"
+                      payment_provider:
+                        type: string
+                        example: "Polaris"
+                      charge:
+                        type: string
+                        example: "0.00"
+                      meta:
+                        type: object
+                        properties:
+                          data:
+                            type: object
+                            properties:
+                              sender:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                    example: "John Doe"
+                                  merchant:
+                                    type: string
+                                    example: "Polaris"
+                                  bank_name:
+                                    type: string
+                                    example: "GTBank"
+                                  account_no:
+                                    type: string
+                                    example: "0987654321"
+        '400':
+          description: Bad Request - If the transaction ID is invalid
+        '401':
+          description: Unauthorized - If the client ID or secret is invalid
+        '403':
+          description: Forbidden - If the API client is not authorized for the business
+        '404':
+          description: Not Found - If the transaction with the specified ID does not exist
+
+  /business-fees:
+    post:
+      summary: Create Business Fees
+      description: Creates business fee configuration for a specific business. Each business can have custom fee settings for different transaction types.
+      tags:
+        - Fees
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - business_id
+              properties:
+                business_id:
+                  type: string
+                  description: The business ID to create fees for
+                  example: "business123"
+                wallet_transfer:
+                  type: object
+                  description: Wallet transfer fee configuration
+                  properties:
+                    percentage_charge:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Percentage charge (0-100)
+                      example: 1.5
+                    flat_fee:
+                      type: number
+                      minimum: 0
+                      description: Flat fee amount in kobo
+                      example: 50
+                    cap_fee:
+                      type: number
+                      minimum: 0
+                      description: Maximum fee cap in kobo
+                      example: 1000
+                wallet_funding:
+                  type: object
+                  description: Wallet funding fee configuration
+                  properties:
+                    percentage_charge:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Percentage charge (0-100)
+                      example: 1
+                    flat_fee:
+                      type: number
+                      minimum: 0
+                      description: Flat fee amount in kobo
+                      example: 2500
+                    cap_fee:
+                      type: number
+                      minimum: 0
+                      description: Maximum fee cap in kobo
+                      example: 10000
+                card_creation:
+                  type: object
+                  description: Card creation fee configuration
+                  properties:
+                    percentage_charge:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Percentage charge (0-100)
+                      example: 2
+                    flat_fee:
+                      type: number
+                      minimum: 0
+                      description: Flat fee amount in USD
+                      example: 4
+                    cap_fee:
+                      type: number
+                      minimum: 0
+                      description: Maximum fee cap in USD
+                      example: 10
+                card_funding:
+                  type: object
+                  description: Card funding fee configuration
+                  properties:
+                    percentage_charge:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Percentage charge (0-100)
+                      example: 1.5
+                    flat_fee:
+                      type: number
+                      minimum: 0
+                      description: Flat fee amount in USD
+                      example: 0.5
+                    cap_fee:
+                      type: number
+                      minimum: 0
+                      description: Maximum fee cap in USD
+                      example: 2
+      responses:
+        '200':
+          description: Business fees created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  status:
+                    type: string
+                    example: "success"
+                  success:
+                    type: boolean
+                    example: true
+                  error:
+                    type: string
+                    example: ""
+                  message:
+                    type: string
+                    example: "Business fees created successfully"
+                  data:
+                    type: object
+                    properties:
+                      fee_id:
+                        type: string
+                        example: "65e6e6d18d41d876944861da"
+                      wallet_transfer:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 0
+                          flat_fee:
+                            type: number
+                            example: 0
+                          cap_fee:
+                            type: number
+                            example: 0
+                      wallet_funding:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 1
+                          flat_fee:
+                            type: number
+                            example: 2500
+                          cap_fee:
+                            type: number
+                            example: 10000
+                      card_creation:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 2
+                          flat_fee:
+                            type: number
+                            example: 4
+                          cap_fee:
+                            type: number
+                            example: 10
+                      card_funding:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 1.5
+                          flat_fee:
+                            type: number
+                            example: 0.5
+                          cap_fee:
+                            type: number
+                            example: 2
+                      business:
+                        type: object
+                        properties:
+                          created_at:
+                            type: string
+                            format: date-time
+                            example: "2025-07-30T12:45:21.638Z"
+                          updated_at:
+                            type: string
+                            format: date-time
+                            example: "2025-07-30T12:45:21.638Z"
+                          _v:
+                            type: integer
+                            example: 1
+                          id:
+                            type: string
+                            example: "65e6e6d18d41d876944861da"
+                          name:
+                            type: string
+                            example: "PICKSON"
+                          business_type:
+                            type: string
+                            example: "REGISTERED_COMPANY"
+                          address:
+                            type: string
+                            example: "House 79, Larix Home Apo, Abuja"
+                          city:
+                            type: string
+                            nullable: true
+                            example: null
+                          state:
+                            type: string
+                            nullable: true
+                            example: null
+                          lga:
+                            type: string
+                            nullable: true
+                            example: null
+                          email:
+                            type: string
+                            nullable: true
+                            example: null
+                          registration_number:
+                            type: string
+                            nullable: true
+                            example: null
+                          date_of_registration:
+                            type: string
+                            nullable: true
+                            example: null
+                          verification_status:
+                            type: string
+                            example: "NOT_STARTED"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-07T15:19:05.894Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-07T15:19:05.894Z"
+                      _v:
+                        type: integer
+                        example: 1
+        '400':
+          description: Bad Request - If business fees already exist for the business or invalid data
+        '401':
+          description: Unauthorized - If the JWT token is invalid
+        '403':
+          description: Forbidden - If the user doesn't have ADMIN or SUPER_ADMIN role
+
+    get:
+      summary: Get All Business Fees
+      description: Retrieves all business fee configurations with cursor-based pagination. Supports filtering by business ID and date range.
+      tags:
+        - Fees
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: cursor
+          in: query
+          description: Cursor for pagination
+          required: false
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: From date in ISO format
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+        - name: to
+          in: query
+          description: To date in ISO format
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2025-01-31"
+        - name: page_size
+          in: query
+          description: Number of results to return
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: lean
+          in: query
+          description: Lean option for the query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Business fees retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  status:
+                    type: string
+                    example: "success"
+                  success:
+                    type: boolean
+                    example: true
+                  error:
+                    type: string
+                    example: ""
+                  message:
+                    type: string
+                    example: "Business fees retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        fee_id:
+                          type: string
+                          example: "65e6e6d18d41d876944861da"
+                        wallet_transfer:
+                          type: object
+                          properties:
+                            percentage_charge:
+                              type: number
+                              example: 0
+                            flat_fee:
+                              type: number
+                              example: 0
+                            cap_fee:
+                              type: number
+                              example: 0
+                        wallet_funding:
+                          type: object
+                          properties:
+                            percentage_charge:
+                              type: number
+                              example: 1
+                            flat_fee:
+                              type: number
+                              example: 2500
+                            cap_fee:
+                              type: number
+                              example: 10000
+                        card_creation:
+                          type: object
+                          properties:
+                            percentage_charge:
+                              type: number
+                              example: 2
+                            flat_fee:
+                              type: number
+                              example: 4
+                            cap_fee:
+                              type: number
+                              example: 10
+                        card_funding:
+                          type: object
+                          properties:
+                            percentage_charge:
+                              type: number
+                              example: 1.5
+                            flat_fee:
+                              type: number
+                              example: 0.5
+                            cap_fee:
+                              type: number
+                              example: 2
+                        business:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "65e6e6d18d41d876944861da"
+                            name:
+                              type: string
+                              example: "PICKSON"
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2025-08-07T15:19:05.894Z"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2025-08-07T15:19:05.894Z"
+                        _v:
+                          type: integer
+                          example: 1
+                  meta:
+                    type: object
+                    properties:
+                      next_cursor:
+                        type: string
+                        example: "65e6e6d18d41d876944861da"
+        '401':
+          description: Unauthorized - If the JWT token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "UNAUTHORIZED"
+                      message:
+                        type: string
+                        example: "Invalid client ID or secret"
+        '403':
+          description: Forbidden - If the user doesn't have ADMIN or SUPER_ADMIN role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "FORBIDDEN"
+                      message:
+                        type: string
+                        example: "API client not authorized for the business"
+
+  /business-fees/{businessId}:
+    get:
+      summary: Get Business Fees
+      description: Retrieves business fee configuration for a specific business.
+      tags:
+        - Fees
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          description: The business ID to retrieve fees for
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Business fees retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  status:
+                    type: string
+                    example: "success"
+                  success:
+                    type: boolean
+                    example: true
+                  error:
+                    type: string
+                    example: ""
+                  message:
+                    type: string
+                    example: "Business fees retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      fee_id:
+                        type: string
+                        example: "65e6e6d18d41d876944861da"
+                      wallet_transfer:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 0
+                          flat_fee:
+                            type: number
+                            example: 0
+                          cap_fee:
+                            type: number
+                            example: 0
+                      wallet_funding:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 1
+                          flat_fee:
+                            type: number
+                            example: 2500
+                          cap_fee:
+                            type: number
+                            example: 10000
+                      card_creation:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 2
+                          flat_fee:
+                            type: number
+                            example: 4
+                          cap_fee:
+                            type: number
+                            example: 10
+                      card_funding:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 1.5
+                          flat_fee:
+                            type: number
+                            example: 0.5
+                          cap_fee:
+                            type: number
+                            example: 2
+                      business:
+                        type: object
+                        properties:
+                          created_at:
+                            type: string
+                            format: date-time
+                            example: "2025-07-30T12:45:21.638Z"
+                          updated_at:
+                            type: string
+                            format: date-time
+                            example: "2025-07-30T12:45:21.638Z"
+                          _v:
+                            type: integer
+                            example: 1
+                          id:
+                            type: string
+                            example: "65e6e6d18d41d876944861da"
+                          name:
+                            type: string
+                            example: "PICKSON"
+                          business_type:
+                            type: string
+                            example: "REGISTERED_COMPANY"
+                          address:
+                            type: string
+                            example: "House 79, Larix Home Apo, Abuja"
+                          city:
+                            type: string
+                            nullable: true
+                            example: null
+                          state:
+                            type: string
+                            nullable: true
+                            example: null
+                          lga:
+                            type: string
+                            nullable: true
+                            example: null
+                          email:
+                            type: string
+                            nullable: true
+                            example: null
+                          registration_number:
+                            type: string
+                            nullable: true
+                            example: null
+                          date_of_registration:
+                            type: string
+                            nullable: true
+                            example: null
+                          verification_status:
+                            type: string
+                            example: "NOT_STARTED"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-07T15:19:05.894Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-07T15:19:05.894Z"
+                      _v:
+                        type: integer
+                        example: 1
+        '401':
+          description: Unauthorized - If the JWT token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "UNAUTHORIZED"
+                      message:
+                        type: string
+                        example: "Invalid client ID or secret"
+        '403':
+          description: Forbidden - If the user doesn't have ADMIN or SUPER_ADMIN role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "FORBIDDEN"
+                      message:
+                        type: string
+                        example: "API client not authorized for the business"
+        '404':
+          description: Not Found - If no business fees found for the business ID
+
+    put:
+      summary: Update Business Fees
+      description: Updates business fee configuration for a specific business. Only provided fee types will be updated.
+      tags:
+        - Fees
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          description: The business ID to update fees for
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                wallet_transfer:
+                  type: object
+                  description: Wallet transfer fee configuration
+                  properties:
+                    percentage_charge:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Percentage charge (0-100)
+                      example: 0.5
+                    flat_fee:
+                      type: number
+                      minimum: 0
+                      description: Flat fee amount in kobo
+                      example: 1000
+                    cap_fee:
+                      type: number
+                      minimum: 0
+                      description: Maximum fee cap in kobo
+                      example: 5000
+                wallet_funding:
+                  type: object
+                  description: Wallet funding fee configuration
+                  properties:
+                    percentage_charge:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Percentage charge (0-100)
+                      example: 1
+                    flat_fee:
+                      type: number
+                      minimum: 0
+                      description: Flat fee amount in kobo
+                      example: 2500
+                    cap_fee:
+                      type: number
+                      minimum: 0
+                      description: Maximum fee cap in kobo
+                      example: 10000
+                card_creation:
+                  type: object
+                  description: Card creation fee configuration
+                  properties:
+                    percentage_charge:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Percentage charge (0-100)
+                      example: 2
+                    flat_fee:
+                      type: number
+                      minimum: 0
+                      description: Flat fee amount in USD
+                      example: 4
+                    cap_fee:
+                      type: number
+                      minimum: 0
+                      description: Maximum fee cap in USD
+                      example: 10
+                card_funding:
+                  type: object
+                  description: Card funding fee configuration
+                  properties:
+                    percentage_charge:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Percentage charge (0-100)
+                      example: 2
+                    flat_fee:
+                      type: number
+                      minimum: 0
+                      description: Flat fee amount in USD
+                      example: 1
+                    cap_fee:
+                      type: number
+                      minimum: 0
+                      description: Maximum fee cap in USD
+                      example: 3
+      responses:
+        '200':
+          description: Business fees updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  status:
+                    type: string
+                    example: "success"
+                  success:
+                    type: boolean
+                    example: true
+                  error:
+                    type: string
+                    example: ""
+                  message:
+                    type: string
+                    example: "Business fees updated successfully"
+                  data:
+                    type: object
+                    properties:
+                      fee_id:
+                        type: string
+                        example: "65e6e6d18d41d876944861da"
+                      wallet_transfer:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 0.5
+                          flat_fee:
+                            type: number
+                            example: 1000
+                          cap_fee:
+                            type: number
+                            example: 5000
+                      wallet_funding:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 1
+                          flat_fee:
+                            type: number
+                            example: 2500
+                          cap_fee:
+                            type: number
+                            example: 10000
+                      card_creation:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 2
+                          flat_fee:
+                            type: number
+                            example: 4
+                          cap_fee:
+                            type: number
+                            example: 10
+                      card_funding:
+                        type: object
+                        properties:
+                          percentage_charge:
+                            type: number
+                            example: 2
+                          flat_fee:
+                            type: number
+                            example: 1
+                          cap_fee:
+                            type: number
+                            example: 3
+                      business:
+                        type: object
+                        properties:
+                          created_at:
+                            type: string
+                            format: date-time
+                            example: "2025-07-30T12:45:21.638Z"
+                          updated_at:
+                            type: string
+                            format: date-time
+                            example: "2025-07-30T12:45:21.638Z"
+                          _v:
+                            type: integer
+                            example: 1
+                          id:
+                            type: string
+                            example: "65e6e6d18d41d876944861da"
+                          name:
+                            type: string
+                            example: "PICKSON"
+                          business_type:
+                            type: string
+                            example: "REGISTERED_COMPANY"
+                          address:
+                            type: string
+                            example: "House 79, Larix Home Apo, Abuja"
+                          city:
+                            type: string
+                            nullable: true
+                            example: null
+                          state:
+                            type: string
+                            nullable: true
+                            example: null
+                          lga:
+                            type: string
+                            nullable: true
+                            example: null
+                          email:
+                            type: string
+                            nullable: true
+                            example: null
+                          registration_number:
+                            type: string
+                            nullable: true
+                            example: null
+                          date_of_registration:
+                            type: string
+                            nullable: true
+                            example: null
+                          verification_status:
+                            type: string
+                            example: "NOT_STARTED"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-07T15:19:05.894Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-07T15:20:30.123Z"
+                      _v:
+                        type: integer
+                        example: 1
+        '401':
+          description: Unauthorized - If the JWT token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "UNAUTHORIZED"
+                      message:
+                        type: string
+                        example: "Invalid client ID or secret"
+        '403':
+          description: Forbidden - If the user doesn't have ADMIN or SUPER_ADMIN role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "FORBIDDEN"
+                      message:
+                        type: string
+                        example: "API client not authorized for the business"
+        '404':
+          description: Not Found - If no business fees found for the business ID
+
+    delete:
+      summary: Delete Business Fees
+      description: Deletes business fee configuration for a specific business.
+      tags:
+        - Fees
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          description: The business ID to delete fees for
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Business fees deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  status:
+                    type: string
+                    example: "success"
+                  success:
+                    type: boolean
+                    example: true
+                  error:
+                    type: string
+                    example: ""
+                  message:
+                    type: string
+                    example: "Business fees deleted successfully"
+        '401':
+          description: Unauthorized - If the JWT token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "UNAUTHORIZED"
+                      message:
+                        type: string
+                        example: "Invalid client ID or secret"
+        '403':
+          description: Forbidden - If the user doesn't have ADMIN or SUPER_ADMIN role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "FORBIDDEN"
+                      message:
+                        type: string
+                        example: "API client not authorized for the business"
+        '404':
+          description: Not Found - If no business fees found for the business ID
+
+  /business-fees/{businessId}/{feeType}/compute:
+    post:
+      summary: Compute Business Fee
+      description: Calculates the fee amount for a specific business and fee type based on the transaction amount.
+      tags:
+        - Fees
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          description: The business ID to compute fees for
+          required: true
+          schema:
+            type: string
+        - name: feeType
+          in: path
+          description: The fee type to compute
+          required: true
+          schema:
+            type: string
+            enum: [walletTransfer, walletFunding, cardCreation, cardFunding]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+              properties:
+                amount:
+                  type: number
+                  description: The transaction amount to compute fees for
+                  example: 10000
+      responses:
+        '200':
+          description: Fee computed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  status:
+                    type: string
+                    example: "success"
+                  success:
+                    type: boolean
+                    example: true
+                  error:
+                    type: string
+                    example: ""
+                  message:
+                    type: string
+                    example: "Fee computed successfully"
+                  data:
+                    type: object
+                    properties:
+                      business_id:
+                        type: string
+                        example: "65e6e6d18d41d876944861da"
+                      fee_type:
+                        type: string
+                        example: "walletTransfer"
+                      amount:
+                        type: number
+                        example: 10000
+                      computed_fee:
+                        type: number
+                        example: 1050
+                      fee_unit:
+                        type: string
+                        example: "kobo"
+        '400':
+          description: Bad Request - If the fee type is invalid or amount is invalid
+        '401':
+          description: Unauthorized - If the JWT token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "UNAUTHORIZED"
+                      message:
+                        type: string
+                        example: "Invalid client ID or secret"
+        '403':
+          description: Forbidden - If the user doesn't have ADMIN or SUPER_ADMIN role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "FORBIDDEN"
+                      message:
+                        type: string
+                        example: "API client not authorized for the business"
+        '404':
+          description: Not Found - If no business fees found for the business ID
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ClientAuth:
+      type: apiKey
+      in: header
+      name: x-client-id
+    ClientSecret:
+      type: http
+      scheme: bearer
+
+  schemas:
+    BusinessFeesResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        status:
+          type: string
+          example: "success"
+        success:
+          type: boolean
+          example: true
+        error:
+          type: string
+          example: ""
+        message:
+          type: string
+          example: "Business fees retrieved successfully"
+        data:
+          type: object
+          properties:
+            fee_id:
+              type: string
+              example: "65e6e6d18d41d876944861da"
+            wallet_transfer:
+              type: object
+              properties:
+                percentage_charge:
+                  type: number
+                  example: 0
+                flat_fee:
+                  type: number
+                  example: 0
+                cap_fee:
+                  type: number
+                  example: 0
+            wallet_funding:
+              type: object
+              properties:
+                percentage_charge:
+                  type: number
+                  example: 1
+                flat_fee:
+                  type: number
+                  example: 2500
+                cap_fee:
+                  type: number
+                  example: 10000
+            card_creation:
+              type: object
+              properties:
+                percentage_charge:
+                  type: number
+                  example: 2
+                flat_fee:
+                  type: number
+                  example: 4
+                cap_fee:
+                  type: number
+                  example: 10
+            card_funding:
+              type: object
+              properties:
+                percentage_charge:
+                  type: number
+                  example: 1.5
+                flat_fee:
+                  type: number
+                  example: 0.5
+                cap_fee:
+                  type: number
+                  example: 2
+            business:
+              type: object
+              properties:
+                created_at:
+                  type: string
+                  format: date-time
+                  example: "2025-07-30T12:45:21.638Z"
+                updated_at:
+                  type: string
+                  format: date-time
+                  example: "2025-07-30T12:45:21.638Z"
+                _v:
+                  type: integer
+                  example: 1
+                id:
+                  type: string
+                  example: "65e6e6d18d41d876944861da"
+                name:
+                  type: string
+                  example: "PICKSON"
+                business_type:
+                  type: string
+                  example: "REGISTERED_COMPANY"
+                address:
+                  type: string
+                  example: "House 79, Larix Home Apo, Abuja"
+                city:
+                  type: string
+                  nullable: true
+                  example: null
+                state:
+                  type: string
+                  nullable: true
+                  example: null
+                lga:
+                  type: string
+                  nullable: true
+                  example: null
+                email:
+                  type: string
+                  nullable: true
+                  example: null
+                registration_number:
+                  type: string
+                  nullable: true
+                  example: null
+                date_of_registration:
+                  type: string
+                  nullable: true
+                  example: null
+                verification_status:
+                  type: string
+                  example: "NOT_STARTED"
+            created_at:
+              type: string
+              format: date-time
+              example: "2025-08-07T15:19:05.894Z"
+            updated_at:
+              type: string
+              format: date-time
+              example: "2025-08-07T15:19:05.894Z"
+            _v:
+              type: integer
+              example: 1
+
+tags:
+  - name: Authentication
+    description: User authentication operations
+  - name: Business
+    description: Business management operations
+  - name: Wallets
+    description: Wallet management operations
+  - name: Transactions
+    description: Transaction PIN operations
+  - name: Business Transfers
+    description: Business transfer operations
+  - name: Business Transactions
+    description: Business wallet transaction operations
+  - name: Fees
+    description: Business fee management operations
