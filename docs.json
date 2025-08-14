@@ -85,15 +85,14 @@
               "api-reference/business/wallets-parent"
             ]
           },
+
           {
-            "group": "Fees",
+            "group": "Bills",
             "pages": [
-              "api-reference/business/fees-create",
-              "api-reference/business/fees-list",
-              "api-reference/business/fees-get",
-              "api-reference/business/fees-update",
-              "api-reference/business/fees-delete",
-              "api-reference/business/fees-compute"
+              "api-reference/business/bills-airtime-data-phone-number-network",
+              "api-reference/business/bills-airtime-data-data-plans",
+              "api-reference/business/bills-airtime-data-airtime-purchase",
+              "api-reference/business/bills-airtime-data-data-purchase"
             ]
           }
         ]
