@@ -1,4 +1,44 @@
 ---
 title: 'Purchase Airtime (API)'
+description: 'Processes airtime purchase via API'
 openapi: 'POST /business/bills/airtime-data/airtime/purchase'
 ---
+
+## Overview
+
+Processes airtime purchase via API. This endpoint allows businesses to purchase airtime for phone numbers using their business float wallet.
+
+## Authentication
+
+- **Type**: API Client Authentication
+- **Headers**:
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Prerequisites
+
+- Valid API client credentials
+- Business float wallet with sufficient funds
+- Valid phone number and network
+
+## Request Body
+
+```json
+{
+  "phone_number": "08012345678",
+  "network": "MTN",
+  "amount": 1000,
+  "source_account_number": "9016997676",
+  "description": "Airtime purchase for customer"
+}
+```
+
+## Response
+
+Returns transaction details including transaction ID, reference, and status upon successful purchase.
+
+## Error Handling
+
+- **400**: Invalid phone number or amount
+- **401**: Invalid client credentials
+- **404**: Business or wallet not found

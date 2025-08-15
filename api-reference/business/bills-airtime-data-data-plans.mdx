@@ -1,4 +1,35 @@
 ---
 title: 'Get Data Plans'
+description: 'Retrieves available data plans for a network provider'
 openapi: 'GET /business/bills/airtime-data/data/data-plans'
 ---
+
+## Overview
+
+Retrieves available data plans for a specific network provider. This endpoint provides a list of data bundles available for purchase from networks like MTN, Airtel, Glo, and 9mobile.
+
+## Authentication
+
+- **Type**: API Client Authentication
+- **Headers**:
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Prerequisites
+
+- Valid API client credentials
+- Network provider identifier
+
+## Query Parameters
+
+- **network** (required): Network provider (MTN, Airtel, Glo, 9mobile)
+
+## Response
+
+Returns an array of available data plans with details including plan ID, name, amount, and validity period.
+
+## Error Handling
+
+- **400**: Invalid network provider
+- **401**: Invalid client credentials
+- **404**: Data plans not found

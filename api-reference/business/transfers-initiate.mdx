@@ -1,33 +1,45 @@
 ---
 title: 'Initiate Business Transfer (API)'
-description: 'Initiate a transfer from a business float wallet via API'
+description: 'Initiates a transfer from a business float wallet via API'
 openapi: 'POST /business/transfers'
 ---
 
 ## Overview
 
-Initiates a transfer from a business float wallet via API. This endpoint is designed for server-to-server communication using API client credentials.
+Initiates a transfer from a business float wallet via API. This endpoint allows businesses to transfer funds to external bank accounts using their float wallet.
 
 ## Authentication
 
 - **Type**: API Client
-- **Headers**: 
+- **Headers**:
   - `x-client-id`: Client ID (required, string)
   - `Authorization`: `Bearer <client_secret>` (required, string)
 
 ## Prerequisites
 
-- The source account must be a business float wallet
-- API client must be authorized for the business
-- Sufficient funds must be available
+- API client must be authenticated and authorized for the business
+- Business must have a float wallet with sufficient balance
+- Valid beneficiary account details
 
 ## Request Body
 
-The request requires beneficiary details, source account, amount, and optional description and sender name.
+```json
+{
+  "beneficiary": {
+    "account_name": "John Doe",
+    "account_number": "1234567890",
+    "bank_code": "044"
+  },
+  "source_account_number": "9876543210",
+  "amount": 1000,
+  "description": "Payment for services",
+  "sender_name": "Business Inc"
+}
+```
 
 ## Response
 
-Returns transaction details including transaction ID, reference, amount, charges, and timestamps.
+Returns transaction details including transaction ID, reference, and status.
 
 ## Error Handling
 

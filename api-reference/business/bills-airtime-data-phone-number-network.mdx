@@ -1,4 +1,35 @@
 ---
 title: 'Get Network for Phone Number'
+description: 'Retrieves the network provider for a given phone number'
 openapi: 'GET /business/bills/airtime-data/phone-number/network'
 ---
+
+## Overview
+
+Retrieves the network provider for a given phone number. This endpoint helps identify which network (MTN, Airtel, Glo, 9mobile) a phone number belongs to.
+
+## Authentication
+
+- **Type**: API Client Authentication
+- **Headers**:
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Prerequisites
+
+- Valid API client credentials
+- Phone number in Nigerian format
+
+## Query Parameters
+
+- **phone_number** (required): Phone number to lookup (Nigerian format, e.g., "08012345678")
+
+## Response
+
+Returns the network provider information for the specified phone number.
+
+## Error Handling
+
+- **400**: Invalid phone number format
+- **401**: Invalid client credentials
+- **404**: Network not found

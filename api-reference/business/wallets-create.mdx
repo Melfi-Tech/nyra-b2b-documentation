@@ -1,36 +1,42 @@
 ---
-title: 'Create Wallet for Business Customer'
-description: 'Creates a new wallet for a customer under the business associated with the authenticated API client'
+title: 'Create Business Wallet'
+description: 'Creates a new wallet for a business customer'
 openapi: 'POST /business/wallets'
 ---
 
 ## Overview
 
-Creates a new wallet for a customer under the business associated with the authenticated API client. This endpoint is used to provision customer sub-wallets for business operations.
+Creates a new wallet for a business customer. This endpoint allows businesses to create sub-wallets for their customers with specified parameters.
 
 ## Authentication
 
-- **Type**: API Client
+- **Type**: Bearer Token
 - **Headers**:
-  - `x-client-id`: Client ID (required, string)
-  - `Authorization`: `Bearer <client_secret>` (required, string)
+  - `Authorization`: `Bearer <jwt_token>` (required, string)
 
 ## Prerequisites
 
-- API client must be authenticated and authorized for the business
-- Valid customer information must be provided
-- BVN must be exactly 11 digits
+- User must be authenticated with valid JWT token
+- User must have permission to create wallets for the business
 
 ## Request Body
 
-The request requires comprehensive customer information including personal details, address, and BVN verification.
+```json
+{
+  "customer_id": "string",
+  "wallet_type": "string",
+  "currency": "string",
+  "description": "string"
+}
+```
 
 ## Response
 
-Returns wallet details including wallet ID, account number, bank name, and ownership information.
+Returns the created wallet object with details including wallet ID, customer ID, type, currency, and status.
 
 ## Error Handling
 
-- **400**: Invalid payload or BVN not 11 digits
-- **401**: Invalid client ID or secret
-- **403**: API client not authorized for the business
+- **400**: Invalid request parameters
+- **401**: Invalid or expired token
+- **403**: User lacks permission to create wallets
+- **409**: Wallet already exists for customer

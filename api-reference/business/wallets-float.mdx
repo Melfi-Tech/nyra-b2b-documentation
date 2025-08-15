@@ -1,12 +1,12 @@
 ---
-title: 'Get Business Float Wallets'
-description: 'Retrieves all float wallets for the business associated with the authenticated API client'
-openapi: 'GET /business/wallets/float'
+title: 'Get Business Customer Sub-Wallet Float'
+description: 'Retrieves the float balance of a specific customer sub-wallet for the business associated with the authenticated API client'
+openapi: 'GET /business/wallets/{id}/float'
 ---
 
 ## Overview
 
-Retrieves all float wallets for the business associated with the authenticated API client. Float wallets are special business accounts used for operational liquidity and customer service operations.
+Retrieves the float balance of a specific customer sub-wallet for the business associated with the authenticated API client. Float wallets are special business accounts used for operational liquidity and customer service operations.
 
 ## Authentication
 
@@ -18,14 +18,15 @@ Retrieves all float wallets for the business associated with the authenticated A
 ## Prerequisites
 
 - API client must be authenticated and authorized for the business
-- Business must have active float wallets
+- Valid wallet ID must be provided
+- Wallet must belong to the business
 
 ## Response
 
-Returns an array of float wallet objects with detailed information including account numbers, bank names, and ownership details.
+Returns float wallet information including float balance, main balance, total balance, and currency details.
 
 ## Error Handling
 
 - **401**: Invalid client ID or secret
 - **403**: API client not authorized for the business
-- **404**: Business not found
+- **404**: Wallet not found

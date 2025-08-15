@@ -1,4 +1,42 @@
 ---
 title: 'Purchase Data (API)'
-openapi: 'POST /business/bills/airtime-data/data/purchase'
+description: 'Processes data bundle purchase via API'
+openapi: 'POST /business/bills/airtime-data/data-purchase'
 ---
+
+## Overview
+
+Processes data bundle purchase via API. This endpoint allows businesses to purchase data bundles for phone numbers using their business float wallet.
+
+## Authentication
+
+- **Type**: API Client Authentication
+- **Headers**:
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
+
+## Prerequisites
+
+- Valid API client credentials
+- Business float wallet with sufficient funds
+- Valid phone number and data plan ID
+
+## Request Body
+
+```json
+{
+  "phone_number": "08012345678",
+  "plan_id": "plan_123",
+  "business_id": "65e6e6d18d41d876944861da"
+}
+```
+
+## Response
+
+Returns transaction details including transaction ID, reference, and status upon successful purchase.
+
+## Error Handling
+
+- **400**: Invalid phone number or plan
+- **401**: Invalid client credentials
+- **404**: Business or wallet not found

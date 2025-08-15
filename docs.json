@@ -18,23 +18,7 @@
             "group": "Getting Started",
             "pages": [
               "index",
-              "quickstart"
-            ]
-          },
-          {
-            "group": "Authentication",
-            "pages": [
-              "auth/overview",
-              "auth/login",
-              "auth/register"
-            ]
-          },
-          {
-            "group": "Business Management",
-            "pages": [
-              "business/overview",
-              "business/register",
-              "business/api-clients"
+              "authentication"
             ]
           }
         ]
@@ -42,27 +26,11 @@
       {
         "tab": "API Reference",
         "groups": [
-          {
-            "group": "Authentication",
-            "pages": [
-              "api-reference/auth/login",
-              "api-reference/auth/register"
-            ]
-          },
-          {
-            "group": "Management",
-            "pages": [
-              "api-reference/business/register",
-              "api-reference/business/all",
-              "api-reference/business/get",
-              "api-reference/business/api-clients"
-            ]
-          },
+
           {
             "group": "Transfers",
             "pages": [
               "api-reference/business/transfers-initiate",
-              "api-reference/business/transfers-dashboard",
               "api-reference/business/transfers-name-enquiry",
               "api-reference/business/transfers-bank-list"
             ]
@@ -104,15 +72,23 @@
               "api-reference/business/bills-categories-categories-category-id-billers"
             ]
           },
+
           {
-            "group": "Webhooks",
+            "group": "Temporary Accounts",
             "pages": [
-              "api-reference/business/webhooks-list",
-              "api-reference/business/webhooks-create",
-              "api-reference/business/webhooks-regenerate-secret",
-              "api-reference/business/webhooks-update",
-              "api-reference/business/webhooks-delete",
-              "api-reference/business/webhooks-resend"
+              "api-reference/business/temporary-accounts-create",
+              "api-reference/business/temporary-accounts-get",
+              "api-reference/business/temporary-accounts-status"
+            ]
+          },
+          {
+            "group": "Miscellaneous",
+            "pages": [
+              "api-reference/business/identities-bvn-verify",
+              "api-reference/business/identities-nin-verify",
+              "api-reference/business/identities-cac-verify",
+              "api-reference/business/identities-bvn-verify-phone",
+              "api-reference/business/identities-docs-upload"
             ]
           }
         ]

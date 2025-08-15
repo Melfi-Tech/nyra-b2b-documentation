@@ -1,35 +1,32 @@
 ---
-title: 'Get Parent Wallet Details'
-description: 'Retrieves details of the parent wallet for a business, accessible by an authenticated user'
-openapi: 'GET /business/{businessId}/wallet'
+title: 'Get Business Customer Sub-Wallet Parent'
+description: 'Retrieves information about the parent wallet of a specific customer sub-wallet for the business associated with the authenticated API client'
+openapi: 'GET /business/wallets/{id}/parent'
 ---
 
 ## Overview
 
-Retrieves details of the parent wallet for a business, accessible by an authenticated user. This endpoint provides access to the main business wallet information for user management and monitoring.
+Retrieves information about the parent wallet of a specific customer sub-wallet for the business associated with the authenticated API client. This endpoint provides hierarchical wallet relationship information.
 
 ## Authentication
 
-- **Type**: JWT Token
+- **Type**: API Client
 - **Headers**:
-  - `Authorization`: `Bearer <jwt_token>` (required, string)
-
-## Path Parameters
-
-- **businessId**: The ID of the business (required, string)
+  - `x-client-id`: Client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
 
 ## Prerequisites
 
-- User must be authenticated with valid JWT token
-- User must own or have access to the business
-- Business must have an active parent wallet
+- API client must be authenticated and authorized for the business
+- Valid wallet ID must be provided
+- Wallet must belong to the business
 
 ## Response
 
-Returns comprehensive wallet information including business details, owner information, and wallet status.
+Returns parent wallet information including relationship type, parent wallet details, and current wallet ID.
 
 ## Error Handling
 
-- **400**: Invalid businessId
-- **401**: Invalid JWT token
-- **404**: Wallet or business not found
+- **401**: Invalid client ID or secret
+- **403**: API client not authorized for the business
+- **404**: Wallet not found

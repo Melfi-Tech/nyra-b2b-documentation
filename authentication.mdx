@@ -1,0 +1,30 @@
+---
+title: "Authentication"
+description: "Learn how to authenticate with the Nyra Wallet API using API client credentials"
+---
+
+# Authentication
+
+The Nyra Wallet API uses API Keys to authorize every request. You can view and manage your API keys from your Nyra Wallet dashboard.
+
+Be sure to keep your API keys safe and secure as they carry many privileges. Do not post or share your API keys in publicly accessible environments or client-side.
+
+## Getting Started
+
+To use the Nyra Wallet API, sign up on the Nyra Wallet dashboard to create an API client and get your client ID and client secret.
+
+## Authentication via API Client
+
+Pass your API client credentials as headers in your request:
+
+- `x-client-id`: Your client ID (required, string)
+- `Authorization`: Bearer `YOUR_CLIENT_SECRET` (required, string)
+
+### Example
+
+```javascript
+import axios from "axios";
+
+axios.get("https://api.nyrawallet.com/v1/business/wallets", {
+  headers: {
+    "x-client-i
