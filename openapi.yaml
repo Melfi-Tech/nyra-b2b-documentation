@@ -3869,6 +3869,1319 @@ paths:
                     type: string
                     example: "Business or wallet not found"
 
+  /business/bills/electricity/validate:
+    post:
+      summary: Validate Electricity Data
+      description: Validates electricity meter data and retrieves customer information.
+      tags:
+        - Bills
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - biller_id
+                - payment_type_id
+                - meter_number
+              properties:
+                biller_id:
+                  type: string
+                  description: Electricity provider ID
+                  example: "1"
+                payment_type_id:
+                  type: string
+                  description: Payment type ID
+                  example: "VT01"
+                meter_number:
+                  type: string
+                  minLength: 10
+                  description: Meter number (minimum 10 digits)
+                  example: "12345678901"
+                amount:
+                  type: string
+                  description: Amount to validate
+                  example: "5000"
+      responses:
+        '200':
+          description: Electricity data validated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Electricity data validated successfully"
+                  data:
+                    type: object
+                    properties:
+                      customer_name:
+                        type: string
+                        example: "John Doe"
+                      customer_info:
+                        type: string
+                        example: "Test Customer"
+                      outstanding:
+                        type: string
+                        example: "1500"
+                      amount:
+                        type: string
+                        example: "5000"
+        '400':
+          description: Bad Request - Invalid meter number or biller ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  message:
+                    type: string
+                    example: "Invalid meter number or biller ID"
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client credentials"
+        '404':
+          description: Not Found - Meter not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Meter not found"
+
+  /business/bills/electricity/provider/items:
+    get:
+      summary: Get Electricity Provider Items
+      description: Retrieves available payment types for an electricity provider.
+      tags:
+        - Bills
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: biller_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Electricity provider ID
+      responses:
+        '200':
+          description: Electricity provider items retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Electricity provider items retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      payment_type_id:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                label:
+                                  type: string
+                                  example: "PREPAID"
+                                id:
+                                  type: string
+                                  example: "VT01"
+                                amount:
+                                  type: integer
+                                  example: 0
+        '400':
+          description: Bad Request - Invalid biller ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  message:
+                    type: string
+                    example: "Invalid biller ID"
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client credentials"
+        '404':
+          description: Not Found - Provider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Provider not found"
+
+  /business/bills/electricity/pay:
+    post:
+      summary: Pay Electricity Bill (API)
+      description: Processes electricity bill payment via API.
+      tags:
+        - Bills
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - biller_id
+                - payment_type_id
+                - meter_number
+                - amount
+                - customer_name
+                - source_account_number
+              properties:
+                biller_id:
+                  type: string
+                  description: Electricity provider ID
+                  example: "1"
+                payment_type_id:
+                  type: string
+                  description: Payment type ID
+                  example: "VT01"
+                meter_number:
+                  type: string
+                  minLength: 10
+                  description: Meter number (minimum 10 digits)
+                  example: "12345678901"
+                amount:
+                  type: number
+                  minimum: 100
+                  description: Payment amount
+                  example: 5000
+                phone_number:
+                  type: string
+                  description: Contact phone number
+                  example: "08012345678"
+                customer_name:
+                  type: string
+                  description: Customer name
+                  example: "John Doe"
+                source_account_number:
+                  type: string
+                  description: Business float account number
+                  example: "1234567890"
+                description:
+                  type: string
+                  description: Payment description
+                  example: "Electricity payment for July"
+      responses:
+        '201':
+          description: Electricity payment successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Electricity payment successful"
+                  data:
+                    type: object
+                    properties:
+                      transaction_id:
+                        type: string
+                        example: "TXN-01K1WZSME40SNY9F0HXEM3BW8H"
+                      transaction_type:
+                        type: string
+                        example: "DEBIT"
+                      transaction_category:
+                        type: string
+                        example: "bill payment"
+                      transaction_status:
+                        type: string
+                        example: "successful"
+                      balance_before:
+                        type: string
+                        example: "429225.60"
+                      balance_after:
+                        type: number
+                        example: 424225.6
+                      transaction_reference:
+                        type: string
+                        example: "TXN-01K1WZSME40SNY9F0HXEM3BW8H"
+                      description:
+                        type: string
+                        example: "PICKSON electricity payment for 12345678901"
+                      amount:
+                        type: string
+                        example: "-5000.00"
+                      channel:
+                        type: string
+                        example: "bank_transfer"
+                      payment_provider:
+                        type: string
+                        example: "9PSB"
+                      mode:
+                        type: string
+                        example: "electronic"
+                      charge:
+                        type: string
+                        example: "0.00"
+                      provider_charge:
+                        type: string
+                        example: "0.00"
+                      meta:
+                        type: object
+                        properties:
+                          data:
+                            type: object
+                            properties:
+                              source:
+                                type: string
+                                example: "api"
+                              biller_id:
+                                type: string
+                                example: "1"
+                              business_id:
+                                type: string
+                                example: "65e6e6d18d41d876944861da"
+                              meter_number:
+                                type: string
+                                example: "12345678901"
+                              phone_number:
+                                type: string
+                                example: "08012345678"
+                              collection_account_number:
+                                type: string
+                                example: "9016997676"
+                      beneficiary_id:
+                        type: string
+                        nullable: true
+                        example: null
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-05T10:27:49.667Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-05T10:27:49.667Z"
+                      _v:
+                        type: integer
+                        example: 1
+                      currency:
+                        type: string
+                        example: "NGN"
+        '400':
+          description: Bad Request - Invalid payload, insufficient funds, or non-float wallet
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  message:
+                    type: string
+                    example: "Invalid payload, insufficient funds, or non-float wallet"
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client credentials"
+        '404':
+          description: Not Found - Business or wallet not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Business or wallet not found"
+
+  /business/bills/tv/validate:
+    post:
+      summary: Validate TV Data
+      description: Validates TV smart card data and retrieves customer information.
+      tags:
+        - Bills
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tv_biller_id
+                - smart_card_number
+              properties:
+                tv_biller_id:
+                  type: string
+                  description: TV provider ID
+                  example: "3"
+                smart_card_number:
+                  type: string
+                  pattern: '^[0-9]+$'
+                  description: Smart card number (numeric only)
+                  example: "1234567890123456"
+                pkg_id:
+                  type: string
+                  description: Package ID
+                  example: "PKG001"
+                amount:
+                  type: string
+                  description: Amount to validate
+                  example: "15000"
+      responses:
+        '200':
+          description: TV data validated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "TV data validated successfully"
+                  data:
+                    type: object
+                    properties:
+                      customer_name:
+                        type: string
+                        example: "Jane Smith"
+                      customer_info:
+                        type: string
+                        example: "Test TV Customer"
+        '400':
+          description: Bad Request - Invalid smart card number or biller ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  message:
+                    type: string
+                    example: "Invalid smart card number or biller ID"
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client credentials"
+        '404':
+          description: Not Found - Smart card not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Smart card not found"
+
+  /business/bills/tv/provider/items:
+    get:
+      summary: Get TV Provider Items
+      description: Retrieves available packages for a TV provider.
+      tags:
+        - Bills
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: biller_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: TV provider ID
+      responses:
+        '200':
+          description: TV provider items retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "TV provider items retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      pkg_id:
+                        type: object
+                        properties:
+                          items:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                label:
+                                  type: string
+                                  example: "DStv Compact - N19,000"
+                                id:
+                                  type: string
+                                  example: "ng_dstv_compe36"
+                                amount:
+                                  type: integer
+                                  example: 19000
+        '400':
+          description: Bad Request - Invalid biller ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  message:
+                    type: string
+                    example: "Invalid biller ID"
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client credentials"
+        '404':
+          description: Not Found - Provider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Provider not found"
+
+  /business/bills/tv/pay:
+    post:
+      summary: Pay TV Subscription (API)
+      description: Processes TV subscription payment via API.
+      tags:
+        - Bills
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tv_biller_id
+                - smart_card_number
+                - package_id
+                - amount
+                - customer_name
+                - source_account_number
+              properties:
+                tv_biller_id:
+                  type: string
+                  description: TV provider ID
+                  example: "3"
+                smart_card_number:
+                  type: string
+                  pattern: '^[0-9]+$'
+                  description: Smart card number (numeric only)
+                  example: "1234567890123456"
+                package_id:
+                  type: string
+                  description: Package ID
+                  example: "PKG001"
+                amount:
+                  type: number
+                  minimum: 100
+                  description: Payment amount
+                  example: 15000
+                phone_number:
+                  type: string
+                  description: Contact phone number
+                  example: "08012345678"
+                customer_name:
+                  type: string
+                  description: Customer name
+                  example: "John Doe"
+                source_account_number:
+                  type: string
+                  description: Business float account number
+                  example: "1234567890"
+                description:
+                  type: string
+                  description: Payment description
+                  example: "DStv subscription for July"
+      responses:
+        '201':
+          description: TV payment successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "TV payment successful"
+                  data:
+                    type: object
+                    properties:
+                      transaction_id:
+                        type: string
+                        example: "TXN-01K1Y36GYVF5ZDTQ8B0MCT85V3"
+                      transaction_type:
+                        type: string
+                        example: "DEBIT"
+                      transaction_category:
+                        type: string
+                        example: "bill payment"
+                      transaction_status:
+                        type: string
+                        example: "successful"
+                      balance_before:
+                        type: string
+                        example: "429225.60"
+                      balance_after:
+                        type: number
+                        example: 414225.6
+                      transaction_reference:
+                        type: string
+                        example: "TXN-01K1Y36GYVF5ZDTQ8B0MCT85V3"
+                      description:
+                        type: string
+                        example: "PICKSON TV payment for 1234567890123456"
+                      amount:
+                        type: string
+                        example: "-15000.00"
+                      channel:
+                        type: string
+                        example: "bank_transfer"
+                      payment_provider:
+                        type: string
+                        example: "Safe_Haven"
+                      mode:
+                        type: string
+                        example: "electronic"
+                      charge:
+                        type: string
+                        example: "0.00"
+                      provider_charge:
+                        type: string
+                        example: "0.00"
+                      meta:
+                        type: object
+                        properties:
+                          data:
+                            type: object
+                            properties:
+                              source:
+                                type: string
+                                example: "api"
+                              package_id:
+                                type: string
+                                example: "PKG001"
+                              business_id:
+                                type: string
+                                example: "65e6e6d18d41d876944861da"
+                              smart_card_number:
+                                type: string
+                                example: "1234567890123456"
+                              collection_account_number:
+                                type: string
+                                example: "9016997676"
+                      beneficiary_id:
+                        type: string
+                        nullable: true
+                        example: null
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-05T20:46:33.226Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-05T20:46:33.226Z"
+                      _v:
+                        type: integer
+                        example: 1
+                      currency:
+                        type: string
+                        example: "NGN"
+        '400':
+          description: Bad Request - Invalid payload, insufficient funds, or non-float wallet
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  message:
+                    type: string
+                    example: "Invalid payload, insufficient funds, or non-float wallet"
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client credentials"
+        '404':
+          description: Not Found - Business or wallet not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Business or wallet not found"
+
+  /business/bills/categories/categories:
+    get:
+      summary: Get Bill Categories
+      description: Retrieves available bill categories for a specific category context (electricity, cable_tv, or betting).
+      tags:
+        - Bills
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: bill_category_ctx
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [electricity, cable_tv, betting]
+          description: Category context
+      responses:
+        '200':
+          description: Bill categories retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Bill categories retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "1"
+                        category:
+                          type: string
+                          example: "ELECTRICITY"
+                        provider:
+                          type: string
+                          example: "9PSB"
+        '400':
+          description: Bad Request - Invalid category context or missing parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  message:
+                    type: string
+                    example: "Invalid category context or missing parameters"
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client credentials"
+        '404':
+          description: Not Found - Business not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Business not found"
+        '500':
+          description: Internal Server Error - Provider service unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 500
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+                  message:
+                    type: string
+                    example: "Provider service unavailable"
+
+  /business/bills/categories/categories-ctx:
+    get:
+      summary: Get Bill Categories Contexts
+      description: Retrieves all available bill category contexts and their corresponding provider mappings.
+      tags:
+        - Bills
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      responses:
+        '200':
+          description: Bill categories contexts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Bill categories contexts retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      cable_tv:
+                        type: string
+                        example: "cable_tv"
+                      electricity:
+                        type: string
+                        example: "electricity"
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client credentials"
+        '404':
+          description: Not Found - Business not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Business not found"
+        '500':
+          description: Internal Server Error - Service unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 500
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+                  message:
+                    type: string
+                    example: "Service unavailable"
+
+  /business/bills/categories/categories/{category_id}/billers:
+    get:
+      summary: Get Category Billers
+      description: Retrieves available billers for a specific category ID within a category context.
+      tags:
+        - Bills
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Category ID
+        - name: bill_category_ctx
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [electricity, cable_tv]
+          description: Category context
+      responses:
+        '200':
+          description: Category billers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Category billers retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "BP-ABUJA"
+                        biller:
+                          type: string
+                          example: "AEDC"
+                        provider:
+                          type: string
+                          example: "9PSB"
+        '400':
+          description: Bad Request - Invalid category ID or context, or no billers found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  message:
+                    type: string
+                    example: "Invalid category ID or context, or no billers found"
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 401
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid client credentials"
+        '404':
+          description: Not Found - Business, category, or billers not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "Business, category, or billers not found"
+        '500':
+          description: Internal Server Error - Provider service unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 500
+                  status:
+                    type: string
+                    example: "error"
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+                  message:
+                    type: string
+                    example: "Provider service unavailable"
+
 components:
   securitySchemes:
     BearerAuth:
