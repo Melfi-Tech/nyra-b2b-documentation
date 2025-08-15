@@ -27,4 +27,7 @@ import axios from "axios";
 
 axios.get("https://api.nyrawallet.com/v1/business/wallets", {
   headers: {
-    "x-client-i
+    "x-client-id": "your_client_id_here",
+    "Authorization": `Bearer your_client_secret_here`
+  }
+});

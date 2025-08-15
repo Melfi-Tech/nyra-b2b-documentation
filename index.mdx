@@ -1,83 +1,66 @@
 ---
 title: "Introduction"
-description: "Welcome to Nyra Wallet documentation"
+description: "Welcome to Nyra Wallet API documentation"
 ---
 
 ## Welcome to Nyra Wallet
 
-Your secure and user-friendly digital wallet solution.
+Build with the Nyra Wallet Business APIs. Start by setting up authentication, then explore the API reference sections below.
 
 <Card
   title="Start here"
-  icon="rocket"
-  href="/quickstart"
+  icon="key"
+  href="/authentication"
   horizontal
 >
-  Follow our three step quickstart guide.
+  Authenticate using your API client credentials.
 </Card>
 
-## Quick Start
+## API Reference
 
-Get started with Nyra Wallet in minutes.
+Explore the available API sections.
 
 <Columns cols={2}>
   <Card
-    title="Authentication"
-    icon="key"
-    href="/auth/overview"
+    title="Transfers"
+    icon="arrow-right-arrow-left"
+    href="/api-reference/business/transfers-initiate"
   >
-    Learn about our two-tier authentication system.
+    Initiate transfers, name enquiry, and fetch bank list.
   </Card>
   <Card
-    title="Business Management"
-    icon="building"
-    href="/business/overview"
+    title="Transactions"
+    icon="receipt"
+    href="/api-reference/business/transactions-list"
   >
-    Manage businesses and create API clients.
+    List business transactions and fetch transaction details.
+  </Card>
+  <Card
+    title="Wallets"
+    icon="wallet"
+    href="/api-reference/business/wallets-list"
+  >
+    Create and manage business wallets.
+  </Card>
+  <Card
+    title="Bills"
+    icon="bolt"
+    href="/api-reference/business/bills-airtime-data-phone-number-network"
+  >
+    Airtime, data, electricity, and TV bill payments.
+  </Card>
+  <Card
+    title="Temporary Accounts"
+    icon="credit-card"
+    href="/api-reference/business/temporary-accounts-create"
+  >
+    Create and check temporary virtual accounts.
+  </Card>
+  <Card
+    title="Miscellaneous"
+    icon="id-card"
+    href="/api-reference/business/identities-bvn-verify"
+  >
+    Identity verification endpoints.
   </Card>
 </Columns>
-
-## Core Features
-
-Everything you need to get started with Nyra Wallet.
-
-<Columns cols={2}>
-  <Card
-    title="User Management"
-    icon="users"
-    href="/auth/overview"
-  >
-    Manage user accounts and authentication.
-  </Card>
-  <Card
-    title="Business Operations"
-    icon="building"
-    href="/business/overview"
-  >
-    Register and manage businesses.
-  </Card>
-  <Card
-    title="API Integration"
-    icon="plug"
-    href="/business/api-clients"
-  >
-    Create API clients for integrations.
-  </Card>
-  <Card
-    title="API Reference"
-    icon="terminal"
-    href="/api-reference/auth/login"
-  >
-    Complete API documentation.
-  </Card>
-</Columns>
-
-## Ready to get started?
-
-<Card
-  title="Quick Start Guide"
-  icon="rocket"
-  href="/quickstart"
->
-  Follow our step-by-step guide to get up and running with Nyra Wallet.
-</Card>

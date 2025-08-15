@@ -349,7 +349,8 @@ paths:
       tags:
         - Wallets
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       requestBody:
         required: true
         content:
@@ -509,7 +510,8 @@ paths:
       tags:
         - Wallets
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       responses:
         '200':
           description: Wallets retrieved successfully
@@ -561,7 +563,8 @@ paths:
       tags:
         - Wallets
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       parameters:
         - name: id
           in: path
@@ -651,7 +654,8 @@ paths:
       tags:
         - Wallets
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       parameters:
         - name: id
           in: path
@@ -720,7 +724,8 @@ paths:
       tags:
         - Wallets
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       parameters:
         - name: id
           in: path
@@ -795,7 +800,8 @@ paths:
       tags:
         - Wallets
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       parameters:
         - name: id
           in: path
@@ -875,7 +881,8 @@ paths:
       tags:
         - Business Transactions
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       parameters:
         - name: page
           in: query
@@ -968,7 +975,8 @@ paths:
       tags:
         - Business Transactions
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       parameters:
         - name: transaction_id
           in: path
@@ -1078,7 +1086,8 @@ paths:
       tags:
         - Temporary Accounts
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       requestBody:
         required: true
         content:
@@ -1194,7 +1203,8 @@ paths:
       tags:
         - Temporary Accounts
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       parameters:
         - name: id
           in: path
@@ -1277,7 +1287,8 @@ paths:
       tags:
         - Temporary Accounts
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       parameters:
         - name: sessionId
           in: path
@@ -1347,7 +1358,8 @@ paths:
       tags:
         - Identity Verification
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       requestBody:
         required: true
         content:
@@ -1436,7 +1448,8 @@ paths:
       tags:
         - Identity Verification
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       requestBody:
         required: true
         content:
@@ -1519,7 +1532,8 @@ paths:
       tags:
         - Identity Verification
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       requestBody:
         required: true
         content:
@@ -1629,7 +1643,8 @@ paths:
       tags:
         - Identity Verification
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       requestBody:
         required: true
         content:
@@ -1709,7 +1724,8 @@ paths:
       tags:
         - Identity Verification
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       requestBody:
         required: true
         content:
@@ -2265,7 +2281,8 @@ paths:
       tags:
         - Bills
       security:
-        - BearerAuth: []
+        - ClientAuth: []
+        - ClientSecret: []
       parameters:
         - name: network
           in: path
@@ -3378,6 +3395,7 @@ components:
     ClientSecret:
       type: http
       scheme: bearer
+      description: Client secret passed as Bearer token in Authorization header
 
   schemas:
     ErrorResponse:
