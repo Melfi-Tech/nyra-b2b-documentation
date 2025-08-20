@@ -1,0 +1,118 @@
+---
+title: 'Advanced BVN Verification'
+openapi: 'GET /business/kyc/bvn/advance'
+---
+
+# Advanced BVN Verification
+
+Performs an advanced BVN verification and returns extended identity details.
+
+## Overview
+
+This endpoint performs an advanced Bank Verification Number (BVN) verification and returns comprehensive identity information including personal details, address information, banking details, and even a base64 encoded photo.
+
+## Authentication
+
+This endpoint requires API client authentication using:
+- `x-client-id` header (required)
+- `Authorization: Bearer <client_secret>` header (required)
+
+## Request Parameters
+
+### Query Parameters
+
+| Parameter | Type | Required | Description | Example |
+|-----------|------|----------|-------------|---------|
+| `bvn` | string | Yes | Bank Verification Number (11-digit string) | `"12345678901"` |
+
+## Response
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Advance BVN verification completed successfully",
+  "data": {
+    "first_name": "john",
+    "last_name": "doe",
+    "middle_name": "junior",
+    "gender": "Male",
+    "date_of_birth": "1990-01-01",
+    "phone_number1": "08012345678",
+    "phone_number2": "08098765432",
+    "email": "john.doe@example.com",
+    "enrollment_bank": "214",
+    "enrollment_branch": "Main",
+    "level_of_account": "1",
+    "lga_of_origin": "Bende",
+    "lga_of_residence": "Karu",
+    "marital_status": "single",
+    "name_on_card": "JOHN DOE",
+    "nationality": "Nigeria",
+    "registration_date": "19-Apr-2023",
+    "residential_address": "123 test street",
+    "state_of_origin": "Abia State",
+    "state_of_residence": "Nasarawa State",
+    "title": "mr",
+    "watch_listed": "false",
+    "base64_image": "/9j/4AAQSkZJRgABAgAAAQABAAD..."
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Indicates if the request was successful |
+| `message` | string | Success message describing the operation |
+| `data` | object | Contains the verification results |
+| `data.first_name` | string | Customer's first name |
+| `data.last_name` | string | Customer's last name |
+| `data.middle_name` | string | Customer's middle name |
+| `data.gender` | string | Customer's gender |
+| `data.date_of_birth` | string | Customer's date of birth (YYYY-MM-DD format) |
+| `data.phone_number1` | string | Primary phone number |
+| `data.phone_number2` | string | Secondary phone number |
+| `data.email` | string | Customer's email address |
+| `data.enrollment_bank` | string | Bank code where BVN was enrolled |
+| `data.enrollment_branch` | string | Branch where BVN was enrolled |
+| `data.level_of_account` | string | Account level/type |
+| `data.lga_of_origin` | string | Local Government Area of origin |
+| `data.lga_of_residence` | string | Local Government Area of residence |
+| `data.marital_status` | string | Customer's marital status |
+| `data.name_on_card` | string | Name as it appears on bank card |
+| `data.nationality` | string | Customer's nationality |
+| `data.registration_date` | string | BVN registration date |
+| `data.residential_address` | string | Current residential address |
+| `data.state_of_origin` | string | State of origin |
+| `data.state_of_residence` | string | Current state of residence |
+| `data.title` | string | Customer's title (Mr, Mrs, etc.) |
+| `data.watch_listed` | string | Whether customer is on watch list |
+| `data.base64_image` | string | Base64 encoded photo of the customer |
+
+## Error Handling
+
+### 400 Bad Request
+Invalid payload, insufficient funds, or non-float wallet.
+
+### 401 Unauthorized
+Invalid client credentials.
+
+### 404 Not Found
+Business or wallet not found.
+
+## Prerequisites
+
+- Sufficient wallet balance to cover the applicable business KYC fees
+- Valid API client credentials
+- Business must have a float wallet configured
+
+## Notes
+
+- This is a paid service that deducts fees from the business float wallet
+- The BVN must be a valid 11-digit number
+- Returns significantly more detailed information than basic verification
+- Includes a base64 encoded photo of the customer
+- All verifications are performed via API and require proper authentication

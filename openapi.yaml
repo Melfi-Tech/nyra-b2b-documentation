@@ -15,6 +15,348 @@ servers:
 
 paths:
 
+  /business/kyc/bvn/basic:
+    get:
+      summary: Basic BVN Verification
+      description: Performs a basic BVN verification and returns core identity details
+      tags:
+        - KYC
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: bvn
+          in: query
+          required: true
+          description: Bank Verification Number (11-digit string)
+          schema:
+            type: string
+            pattern: '^[0-9]{11}$'
+          example: "12345678901"
+      responses:
+        '200':
+          description: Basic BVN verification completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Basic BVN verification completed successfully"
+                  data:
+                    type: object
+                    properties:
+                      first_name:
+                        type: string
+                        example: "john"
+                      last_name:
+                        type: string
+                        example: "doe"
+                      middle_name:
+                        type: string
+                        example: "junior"
+                      date_of_birth:
+                        type: string
+                        format: date
+                        example: "1990-01-01"
+                      phone_number:
+                        type: string
+                        example: "08012345678"
+              examples:
+                success_response:
+                  summary: Successful Response
+                  description: Example of successful basic BVN verification
+                  value:
+                    success: true
+                    message: "Basic BVN verification completed successfully"
+                    data:
+                      first_name: "john"
+                      last_name: "doe"
+                      middle_name: "junior"
+                      date_of_birth: "1990-01-01"
+                      phone_number: "08012345678"
+        '400':
+          description: Bad Request - Invalid payload, insufficient funds, or non-float wallet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found - Business or wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /business/kyc/bvn/advance:
+    get:
+      summary: Advanced BVN Verification
+      description: Performs an advanced BVN verification and returns extended identity details
+      tags:
+        - KYC
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: bvn
+          in: query
+          required: true
+          description: Bank Verification Number (11-digit string)
+          schema:
+            type: string
+            pattern: '^[0-9]{11}$'
+          example: "12345678901"
+      responses:
+        '200':
+          description: Advanced BVN verification completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Advance BVN verification completed successfully"
+                  data:
+                    type: object
+                    properties:
+                      first_name:
+                        type: string
+                        example: "john"
+                      last_name:
+                        type: string
+                        example: "doe"
+                      middle_name:
+                        type: string
+                        example: "junior"
+                      gender:
+                        type: string
+                        example: "Male"
+                      date_of_birth:
+                        type: string
+                        format: date
+                        example: "1990-01-01"
+                      phone_number1:
+                        type: string
+                        example: "08012345678"
+                      phone_number2:
+                        type: string
+                        example: "08098765432"
+                      email:
+                        type: string
+                        format: email
+                        example: "john.doe@example.com"
+                      enrollment_bank:
+                        type: string
+                        example: "214"
+                      enrollment_branch:
+                        type: string
+                        example: "Main"
+                      level_of_account:
+                        type: string
+                        example: "1"
+                      lga_of_origin:
+                        type: string
+                        example: "Bende"
+                      lga_of_residence:
+                        type: string
+                        example: "Karu"
+                      marital_status:
+                        type: string
+                        example: "single"
+                      name_on_card:
+                        type: string
+                        example: "JOHN DOE"
+                      nationality:
+                        type: string
+                        example: "Nigeria"
+                      registration_date:
+                        type: string
+                        example: "19-Apr-2023"
+                      residential_address:
+                        type: string
+                        example: "123 test street"
+                      state_of_origin:
+                        type: string
+                        example: "Abia State"
+                      state_of_residence:
+                        type: string
+                        example: "Nasarawa State"
+                      title:
+                        type: string
+                        example: "mr"
+                      watch_listed:
+                        type: string
+                        example: "false"
+                      base64_image:
+                        type: string
+                        example: "/9j/4AAQSkZJRgABAgAAAQABAAD..."
+              examples:
+                success_response:
+                  summary: Successful Response
+                  description: Example of successful advanced BVN verification
+                  value:
+                    success: true
+                    message: "Advance BVN verification completed successfully"
+                    data:
+                      first_name: "john"
+                      last_name: "doe"
+                      middle_name: "junior"
+                      gender: "Male"
+                      date_of_birth: "1990-01-01"
+                      phone_number1: "08012345678"
+                      phone_number2: "08098765432"
+                      email: "john.doe@example.com"
+                      enrollment_bank: "214"
+                      enrollment_branch: "Main"
+                      level_of_account: "1"
+                      lga_of_origin: "Bende"
+                      lga_of_residence: "Karu"
+                      marital_status: "single"
+                      name_on_card: "JOHN DOE"
+                      nationality: "Nigeria"
+                      registration_date: "19-Apr-2023"
+                      residential_address: "123 test street"
+                      state_of_origin: "Abia State"
+                      state_of_residence: "Nasarawa State"
+                      title: "mr"
+                      watch_listed: "false"
+                      base64_image: "/9j/4AAQSkZJRgABAgAAAQABAAD..."
+        '400':
+          description: Bad Request - Invalid payload, insufficient funds, or non-float wallet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found - Business or wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /business/kyc/nin:
+    get:
+      summary: NIN Verification
+      description: Performs NIN verification and returns identity details including photo and employment status
+      tags:
+        - KYC
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      parameters:
+        - name: nin
+          in: query
+          required: true
+          description: National Identity Number (11-digit string)
+          schema:
+            type: string
+            pattern: '^[0-9]{11}$'
+          example: "12345678901"
+      responses:
+        '200':
+          description: NIN verification completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "NIN verification completed successfully"
+                  data:
+                    type: object
+                    properties:
+                      first_name:
+                        type: string
+                        example: "jane"
+                      last_name:
+                        type: string
+                        example: "doe"
+                      gender:
+                        type: string
+                        example: "female"
+                      middle_name:
+                        type: string
+                        example: "junior"
+                      photo:
+                        type: string
+                        example: "/9j/4AAQSkZJRgABAgAAAQABAAD..."
+                      date_of_birth:
+                        type: string
+                        format: date
+                        example: "1992-04-16"
+                      email:
+                        type: string
+                        format: email
+                        example: "jane.doe@example.com"
+                      phone_number:
+                        type: string
+                        example: "08011112222"
+                      employment_status:
+                        type: string
+                        example: "unemployed"
+                      marital_status:
+                        type: string
+                        example: "single"
+              examples:
+                success_response:
+                  summary: Successful Response
+                  description: Example of successful NIN verification
+                  value:
+                    success: true
+                    message: "NIN verification completed successfully"
+                    data:
+                      first_name: "jane"
+                      last_name: "doe"
+                      gender: "female"
+                      middle_name: "junior"
+                      photo: "/9j/4AAQSkZJRgABAgAAAQABAAD..."
+                      date_of_birth: "1992-04-16"
+                      email: "jane.doe@example.com"
+                      phone_number: "08011112222"
+                      employment_status: "unemployed"
+                      marital_status: "single"
+        '400':
+          description: Bad Request - Invalid payload, insufficient funds, or non-float wallet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid client credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found - Business or wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /business/transfers:
     post:
@@ -3456,3 +3798,6 @@ tags:
 
   - name: Identity Verification
     description: Business identity verification operations
+
+  - name: KYC
+    description: Know Your Customer verification operations

@@ -1,0 +1,80 @@
+---
+title: 'Basic BVN Verification'
+openapi: 'GET /business/kyc/bvn/basic'
+---
+
+# Basic BVN Verification
+
+Performs a basic BVN verification and returns core identity details.
+
+## Overview
+
+This endpoint performs a basic Bank Verification Number (BVN) verification and returns essential identity information including first name, last name, middle name, date of birth, and phone number.
+
+## Authentication
+
+This endpoint requires API client authentication using:
+- `x-client-id` header (required)
+- `Authorization: Bearer <client_secret>` header (required)
+
+## Request Parameters
+
+### Query Parameters
+
+| Parameter | Type | Required | Description | Example |
+|-----------|------|----------|-------------|---------|
+| `bvn` | string | Yes | Bank Verification Number (11-digit string) | `"12345678901"` |
+
+## Response
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Basic BVN verification completed successfully",
+  "data": {
+    "first_name": "john",
+    "last_name": "doe",
+    "middle_name": "junior",
+    "date_of_birth": "1990-01-01",
+    "phone_number": "08012345678"
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Indicates if the request was successful |
+| `message` | string | Success message describing the operation |
+| `data` | object | Contains the verification results |
+| `data.first_name` | string | Customer's first name |
+| `data.last_name` | string | Customer's last name |
+| `data.middle_name` | string | Customer's middle name |
+| `data.date_of_birth` | string | Customer's date of birth (YYYY-MM-DD format) |
+| `data.phone_number` | string | Customer's phone number |
+
+## Error Handling
+
+### 400 Bad Request
+Invalid payload, insufficient funds, or non-float wallet.
+
+### 401 Unauthorized
+Invalid client credentials.
+
+### 404 Not Found
+Business or wallet not found.
+
+## Prerequisites
+
+- Sufficient wallet balance to cover the applicable business KYC fees
+- Valid API client credentials
+- Business must have a float wallet configured
+
+## Notes
+
+- This is a paid service that deducts fees from the business float wallet
+- The BVN must be a valid 11-digit number
+- All verifications are performed via API and require proper authentication

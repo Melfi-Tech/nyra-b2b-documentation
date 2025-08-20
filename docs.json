@@ -54,6 +54,14 @@
               "api-reference/business/wallets-parent"
             ]
           },
+          {
+            "group": "KYC",
+            "pages": [
+              "api-reference/business/kyc-bvn-basic",
+              "api-reference/business/kyc-bvn-advanced",
+              "api-reference/business/kyc-nin"
+            ]
+          },
 
           {
             "group": "Bills",

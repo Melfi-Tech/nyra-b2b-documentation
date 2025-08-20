@@ -1,0 +1,94 @@
+---
+title: 'NIN Verification'
+openapi: 'GET /business/kyc/nin'
+---
+
+# NIN Verification
+
+Performs NIN verification and returns identity details including photo and employment status.
+
+## Overview
+
+This endpoint performs a National Identity Number (NIN) verification and returns comprehensive identity information including personal details, photo, and employment status. This is useful for thorough identity verification beyond banking information.
+
+## Authentication
+
+This endpoint requires API client authentication using:
+- `x-client-id` header (required)
+- `Authorization: Bearer <client_secret>` header (required)
+
+## Request Parameters
+
+### Query Parameters
+
+| Parameter | Type | Required | Description | Example |
+|-----------|------|----------|-------------|---------|
+| `nin` | string | Yes | National Identity Number (11-digit string) | `"12345678901"` |
+
+## Response
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "NIN verification completed successfully",
+  "data": {
+    "first_name": "jane",
+    "last_name": "doe",
+    "gender": "female",
+    "middle_name": "junior",
+    "photo": "/9j/4AAQSkZJRgABAgAAAQABAAD...",
+    "date_of_birth": "1992-04-16",
+    "email": "jane.doe@example.com",
+    "phone_number": "08011112222",
+    "employment_status": "unemployed",
+    "marital_status": "single"
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Indicates if the request was successful |
+| `message` | string | Success message describing the operation |
+| `data` | object | Contains the verification results |
+| `data.first_name` | string | Customer's first name |
+| `data.last_name` | string | Customer's last name |
+| `data.gender` | string | Customer's gender |
+| `data.middle_name` | string | Customer's middle name |
+| `data.photo` | string | Base64 encoded photo of the customer |
+| `data.date_of_birth` | string | Customer's date of birth (YYYY-MM-DD format) |
+| `data.email` | string | Customer's email address |
+| `data.phone_number` | string | Customer's phone number |
+| `data.employment_status` | string | Customer's current employment status |
+| `data.marital_status` | string | Customer's marital status |
+
+## Error Handling
+
+### 400 Bad Request
+Invalid payload, insufficient funds, or non-float wallet.
+
+### 401 Unauthorized
+Invalid client credentials.
+
+### 404 Not Found
+Business or wallet not found.
+
+## Prerequisites
+
+- Sufficient wallet balance to cover the applicable business KYC fees
+- Valid API client credentials
+- Business must have a float wallet configured
+
+## Notes
+
+- This is a paid service that deducts fees from the business float wallet
+- The NIN must be a valid 11-digit number
+- Returns identity information from the National Identity Management Commission (NIMC)
+- Includes a base64 encoded photo of the customer
+- Provides employment and marital status information
+- All verifications are performed via API and require proper authentication
+- Useful for comprehensive identity verification beyond banking systems
