@@ -18,7 +18,8 @@
             "group": "Getting Started",
             "pages": [
               "index",
-              "authentication"
+              "authentication",
+              "webhooks"
             ]
           }
         ]
