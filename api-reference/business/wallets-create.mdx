@@ -1,42 +1,84 @@
 ---
-title: 'Create Business Wallet'
-description: 'Creates a new wallet for a business customer'
+title: 'Create Wallet for Business'
+description: 'Creates a new wallet for a customer under the business associated with the authenticated API client'
 openapi: 'POST /business/wallets'
 ---
 
 ## Overview
 
-Creates a new wallet for a business customer. This endpoint allows businesses to create sub-wallets for their customers with specified parameters.
+Creates a new wallet for a customer under the business associated with the authenticated API client.
 
 ## Authentication
 
-- **Type**: Bearer Token
+- **Type**: API Client
 - **Headers**:
-  - `Authorization`: `Bearer <jwt_token>` (required, string)
-
-## Prerequisites
-
-- User must be authenticated with valid JWT token
-- User must have permission to create wallets for the business
+  - `x-client-id`: The client ID (required, string)
+  - `Authorization`: `Bearer <client_secret>` (required, string)
 
 ## Request Body
 
 ```json
 {
-  "customer_id": "string",
-  "wallet_type": "string",
-  "currency": "string",
-  "description": "string"
+  "first_name": "string",
+  "last_name": "string",
+  "name_on_account": "string",
+  "middlename": "string",
+  "dob": "string",
+  "gender": "string",
+  "title": "string",
+  "address_line_1": "string",
+  "address_line_2": "string",
+  "city": "string",
+  "country": "string",
+  "phone_number": "string",
+  "email": "string",
+  "bvn": "string"
 }
 ```
 
+### Required Fields
+
+- `first_name`: Customer's first name (string)
+- `last_name`: Customer's last name (string)
+- `dob`: Date of birth in ISO format (string)
+- `gender`: Customer's gender (string)
+- `title`: Customer's title (string)
+- `address_line_1`: Primary address line (string)
+- `city`: City (string)
+- `country`: Country (string)
+- `phone_number`: Valid phone number (string)
+- `email`: Valid email address (string)
+- `bvn`: Bank Verification Number (11-digit string)
+
+### Optional Fields
+
+- `name_on_account`: Name on the account (string)
+- `address_line_2`: Secondary address line (string)
+
 ## Response
 
-Returns the created wallet object with details including wallet ID, customer ID, type, currency, and status.
+### Success Response (201 Created)
+
+```json
+{
+  "success": true,
+  "message": "Wallet created successfully",
+  "data": {
+    "wallet_id": "string",
+    "account_number": "string",
+    "bank_name": "string",
+    "owners_fullname": "string",
+    "frozen": false,
+    "business_id": "string",
+    "isFloat": false,
+    "created_at": "string",
+    "updated_at": "string"
+  }
+}
+```
 
 ## Error Handling
 
-- **400**: Invalid request parameters
-- **401**: Invalid or expired token
-- **403**: User lacks permission to create wallets
-- **409**: Wallet already exists for customer
+- **400 Bad Request**: Invalid request payload or BVN not an 11-digit string
+- **401 Unauthorized**: Invalid client ID or secret
+- **403 Forbidden**: API client not authorized for the business

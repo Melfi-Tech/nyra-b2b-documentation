@@ -1,32 +1,38 @@
 ---
-title: 'Get Business Customer Sub-Wallet Balance'
-description: 'Retrieves the balance of a specific customer sub-wallet for the business associated with the authenticated API client'
-openapi: 'GET /business/wallets/{id}/balance'
+title: 'Get Business Wallet Balance'
+description: 'Retrieves the balance of the primary wallet for the business associated with the authenticated API client'
+openapi: 'GET /business/wallets/wallet_balance'
 ---
 
 ## Overview
 
-Retrieves the balance of a specific customer sub-wallet for the business associated with the authenticated API client. This endpoint provides current balance information for a particular customer wallet.
+Retrieves the balance of the primary wallet for the business associated with the authenticated API client.
 
 ## Authentication
 
 - **Type**: API Client
 - **Headers**:
-  - `x-client-id`: Client ID (required, string)
+  - `x-client-id`: The client ID (required, string)
   - `Authorization`: `Bearer <client_secret>` (required, string)
-
-## Prerequisites
-
-- API client must be authenticated and authorized for the business
-- Valid wallet ID must be provided
-- Wallet must belong to the business
 
 ## Response
 
-Returns wallet balance information including current balance, currency, and last updated timestamp.
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Wallet balance fetched successfully",
+  "data": {
+    "businessId": "string",
+    "businessName": "string",
+    "balance": 0
+  }
+}
+```
 
 ## Error Handling
 
-- **401**: Invalid client ID or secret
-- **403**: API client not authorized for the business
-- **404**: Wallet not found
+- **401 Unauthorized**: Invalid client ID or secret
+- **403 Forbidden**: API client not authorized for the business
+- **404 Not Found**: Business or its wallet not found

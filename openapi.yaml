@@ -344,8 +344,8 @@ paths:
 
   /business/wallets:
     post:
-      summary: Create Business Wallet
-      description: Creates a new wallet for a business customer
+      summary: Create Wallet for Business
+      description: Creates a new wallet for a customer under the business associated with the authenticated API client
       tags:
         - Wallets
       security:
@@ -358,27 +358,77 @@ paths:
             schema:
               type: object
               required:
-                - customer_id
-                - wallet_type
-                - currency
+                - first_name
+                - last_name
+                - dob
+                - gender
+                - title
+                - address_line_1
+                - city
+                - country
+                - phone_number
+                - email
+                - bvn
               properties:
-                customer_id:
+                first_name:
                   type: string
-                  description: ID of the customer
-                  example: "cust_123"
-                wallet_type:
+                  description: Customer's first name
+                  example: "John"
+                last_name:
                   type: string
-                  enum: ["MAIN", "FLOAT", "TEMPORARY"]
-                  description: Type of wallet to create
-                  example: "FLOAT"
-                currency:
+                  description: Customer's last name
+                  example: "Doe"
+                name_on_account:
                   type: string
-                  description: Currency code for the wallet
-                  example: "NGN"
-                description:
+                  description: Name on the account
+                  example: "John Doe"
+                middlename:
                   type: string
-                  description: Optional description for the wallet
-                  example: "Customer float wallet"
+                  description: Customer's middle name
+                  example: "Michael"
+                dob:
+                  type: string
+                  format: date
+                  description: Date of birth in ISO format
+                  example: "1990-01-01"
+                gender:
+                  type: string
+                  description: Customer's gender
+                  example: "Male"
+                title:
+                  type: string
+                  description: Customer's title
+                  example: "Mr"
+                address_line_1:
+                  type: string
+                  description: Primary address line
+                  example: "123 Main Street"
+                address_line_2:
+                  type: string
+                  description: Secondary address line
+                  example: "Apt 4B"
+                city:
+                  type: string
+                  description: City
+                  example: "Lagos"
+                country:
+                  type: string
+                  description: Country
+                  example: "Nigeria"
+                phone_number:
+                  type: string
+                  description: Valid phone number
+                  example: "+2348012345678"
+                email:
+                  type: string
+                  format: email
+                  description: Valid email address
+                  example: "john.doe@example.com"
+                bvn:
+                  type: string
+                  pattern: '^[0-9]{11}$'
+                  description: Bank Verification Number (11-digit string)
+                  example: "12345678901"
       responses:
         '201':
           description: Wallet created successfully
@@ -390,53 +440,59 @@ paths:
                   success:
                     type: boolean
                     example: true
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        example: "65e6e6d18d41d876944861da"
-                      customer_id:
-                        type: string
-                        example: "cust_123"
-                      wallet_type:
-                        type: string
-                        example: "FLOAT"
-                      currency:
-                        type: string
-                        example: "NGN"
-                      status:
-                        type: string
-                        example: "ACTIVE"
-                      created_at:
-                        type: string
-                        format: date-time
-                        example: "2024-01-15T10:30:00Z"
                   message:
                     type: string
                     example: "Wallet created successfully"
+                  data:
+                    type: object
+                    properties:
+                      wallet_id:
+                        type: string
+                        example: "wallet_12345"
+                      account_number:
+                        type: string
+                        example: "1234567890"
+                      bank_name:
+                        type: string
+                        example: "NYRA WALLET"
+                      owners_fullname:
+                        type: string
+                        example: "John Doe"
+                      frozen:
+                        type: boolean
+                        example: false
+                      business_id:
+                        type: string
+                        example: "business_12345"
+                      isFloat:
+                        type: boolean
+                        example: false
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-26T04:22:00.000Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-26T04:22:00.000Z"
         '400':
-          description: Bad Request - Invalid parameters
+          description: Bad Request - Invalid request payload or BVN not an 11-digit string
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: integer
-                    example: 400
-                  status:
-                    type: string
-                    example: "error"
-                  success:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: "Bad Request"
-                  message:
-                    type: string
-                    example: "Invalid wallet parameters"
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '401':
           description: Unauthorized - Invalid token
           content:
@@ -505,8 +561,8 @@ paths:
                     example: "Wallet already exists for customer"
 
     get:
-      summary: List Business Wallets
-      description: Retrieves all wallets associated with the authenticated user's businesses.
+      summary: Get All Customer Sub-Wallets
+      description: Retrieves all customer sub-wallets for the business associated with the authenticated API client. Excludes business float wallets.
       tags:
         - Wallets
       security:
@@ -514,7 +570,7 @@ paths:
         - ClientSecret: []
       responses:
         '200':
-          description: Wallets retrieved successfully
+          description: Sub wallets fetched successfully
           content:
             application/json:
               schema:
@@ -523,59 +579,76 @@ paths:
                   success:
                     type: boolean
                     example: true
+                  message:
+                    type: string
+                    example: "Sub wallets fetched successfully"
                   data:
                     type: array
                     items:
                       type: object
                       properties:
-                        id:
+                        wallet_id:
                           type: string
-                          example: "65e6e6d18d41d876944861da"
+                          example: "wallet_12345"
+                        account_number:
+                          type: string
+                          example: "1234567890"
+                        bank_name:
+                          type: string
+                          example: "NYRA WALLET"
+                        owners_fullname:
+                          type: string
+                          example: "John Doe"
+                        frozen:
+                          type: boolean
+                          example: false
                         business_id:
                           type: string
-                          example: "65e6e6d18d41d876944861da"
-                        wallet_type:
-                          type: string
-                          enum: ["MAIN", "FLOAT", "TEMPORARY"]
-                          example: "MAIN"
-                        balance:
-                          type: number
-                          example: 1000000
-                        currency:
-                          type: string
-                          example: "NGN"
-                        status:
-                          type: string
-                          enum: ["ACTIVE", "INACTIVE", "SUSPENDED"]
-                          example: "ACTIVE"
+                          example: "business_12345"
+                        isFloat:
+                          type: boolean
+                          example: false
                         created_at:
                           type: string
                           format: date-time
-                          example: "2024-01-15T10:30:00Z"
-                  message:
-                    type: string
-                    example: "Wallets retrieved successfully"
+                          example: "2025-07-26T04:22:00.000Z"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2025-07-26T04:22:00.000Z"
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /business/wallets/{id}:
+  /business/wallets/{walletId}:
     get:
-      summary: Get Wallet Details
-      description: Retrieves detailed information about a specific wallet.
+      summary: Get Sub-Wallet Details
+      description: Retrieves details of a specific sub-wallet (customer or float) for the business associated with the authenticated API client.
       tags:
         - Wallets
       security:
         - ClientAuth: []
         - ClientSecret: []
       parameters:
-        - name: id
+        - name: walletId
           in: path
           required: true
           description: The ID of the wallet
           schema:
             type: string
-          example: "65e6e6d18d41d876944861da"
+          example: "wallet_12345"
       responses:
         '200':
-          description: Wallet details retrieved successfully
+          description: Wallet fetched successfully
           content:
             application/json:
               schema:
@@ -584,13 +657,83 @@ paths:
                   success:
                     type: boolean
                     example: true
+                  message:
+                    type: string
+                    example: "Wallet fetched successfully"
                   data:
                     type: object
                     properties:
-                      id:
+                      wallet_id:
                         type: string
-                        example: "65e6e6d18d41d876944861da"
+                        example: "wallet_12345"
+                      account_number:
+                        type: string
+                        example: "1234567890"
+                      bank_name:
+                        type: string
+                        example: "NYRA WALLET"
+                      owners_fullname:
+                        type: string
+                        example: "John Doe"
+                      frozen:
+                        type: boolean
+                        example: false
                       business_id:
+                        type: string
+                        example: "business_12345"
+                      isFloat:
+                        type: boolean
+                        example: false
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-26T04:22:00.000Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-26T04:22:00.000Z"
+              examples:
+                success_response:
+                  summary: Successful Response
+                  description: Example of successful response with wallet details
+                  value:
+                    success: true
+                    message: "Wallet fetched successfully"
+                    data: {
+                      "wallet_id": "wallet_12345",
+                      "account_number": "1234567890",
+                      "bank_name": "NYRA WALLET",
+                      "owners_fullname": "John Doe",
+                      "frozen": false,
+                      "business_id": "business_12345",
+                      "isFloat": false,
+                      "created_at": "2025-07-26T04:22:00.000Z",
+                      "updated_at": "2025-07-26T04:22:00.000Z"
+                    }
+        '400':
+          description: Bad Request - Invalid wallet ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found - Wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
                         type: string
                         example: "65e6e6d18d41d876944861da"
                       wallet_type:
@@ -716,6 +859,389 @@ paths:
                   message:
                     type: string
                     example: "Wallet not found"
+
+  /business/wallets/all:
+    get:
+      summary: Get All Customer Sub-Wallets
+      description: Retrieves all customer sub-wallets for the business associated with the authenticated API client. Excludes business float wallets.
+      tags:
+        - Wallets
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      responses:
+        '200':
+          description: Sub wallets fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Sub wallets fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        wallet_id:
+                          type: string
+                          example: "wallet_12345"
+                        account_number:
+                          type: string
+                          example: "1234567890"
+                        bank_name:
+                          type: string
+                          example: "NYRA WALLET"
+                        owners_fullname:
+                          type: string
+                          example: "John Doe"
+                        frozen:
+                          type: boolean
+                          example: false
+                        business_id:
+                          type: string
+                          example: "business_12345"
+                        isFloat:
+                          type: boolean
+                          example: false
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2025-07-26T04:22:00.000Z"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2025-07-26T04:22:00.000Z"
+              examples:
+                success_response:
+                  summary: Successful Response
+                  description: Example of successful response with customer sub-wallets
+                  value:
+                    success: true
+                    message: "Sub wallets fetched successfully"
+                    data: [
+                      {
+                        "wallet_id": "wallet_12345",
+                        "account_number": "1234567890",
+                        "bank_name": "NYRA WALLET",
+                        "owners_fullname": "John Doe",
+                        "frozen": false,
+                        "business_id": "business_12345",
+                        "isFloat": false,
+                        "created_at": "2025-07-26T04:22:00.000Z",
+                        "updated_at": "2025-07-26T04:22:00.000Z"
+                      },
+                      {
+                        "wallet_id": "wallet_67890",
+                        "account_number": "0987654321",
+                        "bank_name": "NYRA WALLET",
+                        "owners_fullname": "Jane Smith",
+                        "frozen": false,
+                        "business_id": "business_12345",
+                        "isFloat": false,
+                        "created_at": "2025-07-26T04:22:00.000Z",
+                        "updated_at": "2025-07-26T04:22:00.000Z"
+                      }
+                    ]
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /business/wallets/wallet_balance:
+    get:
+      summary: Get Business Wallet Balance
+      description: Retrieves the balance of the primary wallet for the business associated with the authenticated API client.
+      tags:
+        - Wallets
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      responses:
+        '200':
+          description: Wallet balance fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Wallet balance fetched successfully"
+                  data:
+                    type: object
+                    properties:
+                      businessId:
+                        type: string
+                        example: "business_12345"
+                      businessName:
+                        type: string
+                        example: "Business Inc"
+                      balance:
+                        type: number
+                        example: 1000000
+              examples:
+                success_response:
+                  summary: Successful Response
+                  description: Example of successful response with business wallet balance
+                  value:
+                    success: true
+                    message: "Wallet balance fetched successfully"
+                    data: {
+                      "businessId": "business_12345",
+                      "businessName": "Business Inc",
+                      "balance": 1000000
+                    }
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found - Business or its wallet not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /business/wallets/float:
+    get:
+      summary: Get Business Float Wallets
+      description: Retrieves all float wallets for the business associated with the authenticated API client.
+      tags:
+        - Wallets
+      security:
+        - ClientAuth: []
+        - ClientSecret: []
+      responses:
+        '200':
+          description: Business float wallets fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Business float wallets fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        wallet_id:
+                          type: string
+                          example: "wallet_12345"
+                        account_number:
+                          type: string
+                          example: "1234567890"
+                        bank_name:
+                          type: string
+                          example: "NYRA WALLET"
+                        owners_fullname:
+                          type: string
+                          example: "Business Inc"
+                        frozen:
+                          type: boolean
+                          example: false
+                        business_id:
+                          type: string
+                          example: "business_12345"
+                        isFloat:
+                          type: boolean
+                          example: true
+                        created_at:
+                          type: string
+                          format: date-time
+                          example: "2025-07-26T04:22:00.000Z"
+                        updated_at:
+                          type: string
+                          format: date-time
+                          example: "2025-07-26T04:22:00.000Z"
+              examples:
+                success_response:
+                  summary: Successful Response
+                  description: Example of successful response with business float wallets
+                  value:
+                    success: true
+                    message: "Business float wallets fetched successfully"
+                    data: [
+                      {
+                        "wallet_id": "wallet_12345",
+                        "account_number": "1234567890",
+                        "bank_name": "NYRA WALLET",
+                        "owners_fullname": "Business Inc",
+                        "frozen": false,
+                        "business_id": "business_12345",
+                        "isFloat": true,
+                        "created_at": "2025-07-26T04:22:00.000Z",
+                        "updated_at": "2025-07-26T04:22:00.000Z"
+                      },
+                      {
+                        "wallet_id": "wallet_67890",
+                        "account_number": "0987654321",
+                        "bank_name": "NYRA WALLET",
+                        "owners_fullname": "Business Inc",
+                        "frozen": false,
+                        "business_id": "business_12345",
+                        "isFloat": true,
+                        "created_at": "2025-07-26T04:22:00.000Z",
+                        "updated_at": "2025-07-26T04:22:00.000Z"
+                      }
+                    ]
+        '401':
+          description: Unauthorized - Invalid client ID or secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - API client not authorized for the business
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found - Business not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /business/{businessId}/wallet:
+    get:
+      summary: Get Parent Wallet Details
+      description: Retrieves details of the parent wallet for a business, accessible by an authenticated user.
+      tags:
+        - Wallets
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          description: The business ID
+          schema:
+            type: string
+          example: "business_12345"
+      responses:
+        '200':
+          description: Wallet retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Wallet retrieved successfully"
+                  data:
+                    type: object
+                    properties:
+                      wallet_id:
+                        type: string
+                        example: "wallet_54321"
+                      account_number:
+                        type: string
+                        example: "1234567890"
+                      business:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "business_12345"
+                          name:
+                            type: string
+                            example: "Business Inc"
+                      owner:
+                        type: object
+                        properties:
+                          user_id:
+                            type: string
+                            example: "user_12345"
+                          email:
+                            type: string
+                            example: "user@example.com"
+                      frozen:
+                        type: boolean
+                        example: false
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-26T04:22:00.000Z"
+                      updated_at:
+                        type: string
+                        format: date-time
+                        example: "2025-07-26T04:22:00.000Z"
+              examples:
+                success_response:
+                  summary: Successful Response
+                  description: Example of successful response with parent wallet details
+                  value:
+                    success: true
+                    message: "Wallet retrieved successfully"
+                    data: {
+                      "wallet_id": "wallet_54321",
+                      "account_number": "1234567890",
+                      "business": {
+                        "id": "business_12345",
+                        "name": "Business Inc"
+                      },
+                      "owner": {
+                        "user_id": "user_12345",
+                        "email": "user@example.com"
+                      },
+                      "frozen": false,
+                      "created_at": "2025-07-26T04:22:00.000Z",
+                      "updated_at": "2025-07-26T04:22:00.000Z"
+                    }
+        '400':
+          description: Bad Request - Invalid businessId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Invalid JWT token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found - Wallet or business not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /business/wallets/{id}/float:
     get:

@@ -1,32 +1,51 @@
 ---
-title: 'Get Business Customer Sub-Wallet Parent'
-description: 'Retrieves information about the parent wallet of a specific customer sub-wallet for the business associated with the authenticated API client'
-openapi: 'GET /business/wallets/{id}/parent'
+title: 'Get Parent Wallet Details'
+description: 'Retrieves details of the parent wallet for a business, accessible by an authenticated user'
+openapi: 'GET /business/{businessId}/wallet'
 ---
 
 ## Overview
 
-Retrieves information about the parent wallet of a specific customer sub-wallet for the business associated with the authenticated API client. This endpoint provides hierarchical wallet relationship information.
+Retrieves details of the parent wallet for a business, accessible by an authenticated user.
 
 ## Authentication
 
-- **Type**: API Client
+- **Type**: JWT Token
 - **Headers**:
-  - `x-client-id`: Client ID (required, string)
-  - `Authorization`: `Bearer <client_secret>` (required, string)
+  - `Authorization`: `Bearer <jwt_token>` (required, string)
 
-## Prerequisites
+## Path Parameters
 
-- API client must be authenticated and authorized for the business
-- Valid wallet ID must be provided
-- Wallet must belong to the business
+- `businessId`: Business ID (required, string)
 
 ## Response
 
-Returns parent wallet information including relationship type, parent wallet details, and current wallet ID.
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Wallet retrieved successfully",
+  "data": {
+    "wallet_id": "wallet_54321",
+    "account_number": "1234567890",
+    "business": {
+      "id": "business_12345",
+      "name": "Business Inc"
+    },
+    "owner": {
+      "user_id": "user_12345",
+      "email": "user@example.com"
+    },
+    "frozen": false,
+    "created_at": "2025-07-26T04:22:00.000Z",
+    "updated_at": "2025-07-26T04:22:00.000Z"
+  }
+}
+```
 
 ## Error Handling
 
-- **401**: Invalid client ID or secret
-- **403**: API client not authorized for the business
-- **404**: Wallet not found
+- **400 Bad Request**: Invalid businessId
+- **401 Unauthorized**: Invalid JWT token
+- **404 Not Found**: Wallet or business not found

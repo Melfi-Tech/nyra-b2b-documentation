@@ -1,32 +1,49 @@
 ---
-title: 'Get Business Customer Sub-Wallet'
-description: 'Retrieves a specific customer sub-wallet for the business associated with the authenticated API client'
-openapi: 'GET /business/wallets/{id}'
+title: 'Get Sub-Wallet Details'
+description: 'Retrieves details of a specific sub-wallet for the business associated with the authenticated API client'
+openapi: 'GET /business/wallets/{walletId}'
 ---
 
 ## Overview
 
-Retrieves a specific customer sub-wallet for the business associated with the authenticated API client. This endpoint provides detailed information about a particular customer wallet including account details and balance information.
+Retrieves details of a specific sub-wallet (customer or float) for the business associated with the authenticated API client.
 
 ## Authentication
 
 - **Type**: API Client
 - **Headers**:
-  - `x-client-id`: Client ID (required, string)
+  - `x-client-id`: The client ID (required, string)
   - `Authorization`: `Bearer <client_secret>` (required, string)
 
-## Prerequisites
+## Path Parameters
 
-- API client must be authenticated and authorized for the business
-- Valid wallet ID must be provided
-- Wallet must belong to the business
+- `walletId`: The ID of the wallet (required, string)
 
 ## Response
 
-Returns detailed wallet information including account number, bank name, balance, and ownership details.
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Wallet fetched successfully",
+  "data": {
+    "wallet_id": "string",
+    "account_number": "string",
+    "bank_name": "string",
+    "owners_fullname": "string",
+    "frozen": false,
+    "business_id": "string",
+    "isFloat": false,
+    "created_at": "string",
+    "updated_at": "string"
+  }
+}
+```
 
 ## Error Handling
 
-- **401**: Invalid client ID or secret
-- **403**: API client not authorized for the business
-- **404**: Wallet not found
+- **400 Bad Request**: Invalid wallet ID
+- **401 Unauthorized**: Invalid client ID or secret
+- **403 Forbidden**: API client not authorized for the business
+- **404 Not Found**: Wallet not found
