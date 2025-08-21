@@ -360,7 +360,7 @@ paths:
 
   /business/transfers:
     post:
-      summary: Initiate Business Transfer (API)
+      summary: Initiate Business Transfer 
       description: Initiates a transfer from a business float wallet via API
       tags:
         - Business Transfers
@@ -2334,7 +2334,7 @@ paths:
 
   /business/bills/airtime-data/airtime/purchase:
     post:
-      summary: Purchase Airtime (API)
+      summary: Purchase Airtime 
       description: Processes airtime purchase via API
       tags:
         - Bills
@@ -2390,78 +2390,15 @@ paths:
                   data:
                     type: object
                     properties:
-                      transaction_id:
+                      reference:
                         type: string
-                        example: "TXN-01K1XDZEX2XADB254DPEJJGBE0"
-                      transaction_type:
-                        type: string
-                        example: "DEBIT"
-                      transaction_category:
-                        type: string
-                        example: "bill payment"
-                      transaction_status:
-                        type: string
-                        example: "successful"
-                      balance_before:
-                        type: string
-                        example: "429225.60"
-                      balance_after:
-                        type: number
-                        example: 428225.6
-                      transaction_reference:
-                        type: string
-                        example: "TXN-01K1XDZEX2XADB254DPEJJGBE0"
-                      description:
-                        type: string
-                        example: "PICKSON airtime purchase for 08012345678"
+                        example: "ULID123456789"
                       amount:
+                        type: number
+                        example: 5000
+                      status:
                         type: string
-                        example: "-1000.00"
-                      channel:
-                        type: string
-                        example: "bank_transfer"
-                      mode:
-                        type: string
-                        example: "electronic"
-                      charge:
-                        type: string
-                        example: "0.00"
-                      meta:
-                        type: object
-                        properties:
-                          data:
-                            type: object
-                            properties:
-                              source:
-                                type: string
-                                example: "api"
-                              business_id:
-                                type: string
-                                example: "65e6e6d18d41d876944861da"
-                              phone_number:
-                                type: string
-                                example: "08012345678"
-                              collection_account_number:
-                                type: string
-                                example: "9016997676"
-                      beneficiary_id:
-                        type: string
-                        nullable: true
-                        example: null
-                      created_at:
-                        type: string
-                        format: date-time
-                        example: "2025-08-05T14:35:40.637Z"
-                      updated_at:
-                        type: string
-                        format: date-time
-                        example: "2025-08-05T14:35:40.637Z"
-                      _v:
-                        type: integer
-                        example: 1
-                      currency:
-                        type: string
-                        example: "NGN"
+                        example: "delivered"
         '400':
           description: Bad Request - Invalid phone number or amount
           content:
@@ -2729,7 +2666,7 @@ paths:
 
   /business/bills/airtime-data/data-purchase:
     post:
-      summary: Purchase Data Bundle (API)
+      summary: Purchase Data Bundle 
       description: Processes data purchase via API
       tags:
         - Bills
@@ -2790,81 +2727,15 @@ paths:
                   data:
                     type: object
                     properties:
-                      transaction_id:
+                      reference:
                         type: string
-                        example: "TXN-01K1VVB97X0FC5B0XPN4JX47E8"
-                      transaction_type:
-                        type: string
-                        example: "DEBIT"
-                      transaction_category:
-                        type: string
-                        example: "bill payment"
-                      transaction_status:
-                        type: string
-                        example: "successful"
-                      balance_before:
-                        type: number
-                        example: 429225.6
-                      balance_after:
-                        type: number
-                        example: 427725.6
-                      transaction_reference:
-                        type: string
-                        example: "TXN-01K1VVB97X0FC5B0XPN4JX47E8"
-                      description:
-                        type: string
-                        example: "PICKSON data purchase for 08012345678"
+                        example: "ULID123456789"
                       amount:
+                        type: number
+                        example: 5000
+                      status:
                         type: string
-                        example: "-1500.00"
-                      channel:
-                        type: string
-                        example: "bank_transfer"
-                      mode:
-                        type: string
-                        example: "electronic"
-                      charge:
-                        type: string
-                        example: "0.00"
-                      meta:
-                        type: object
-                        properties:
-                          data:
-                            type: object
-                            properties:
-                              source:
-                                type: string
-                                example: "api"
-                              bundle_id:
-                                type: string
-                                example: "bundle_123"
-                              business_id:
-                                type: string
-                                example: "65e6e6d18d41d876944861da"
-                              phone_number:
-                                type: string
-                                example: "08012345678"
-                              collection_account_number:
-                                type: string
-                                example: "9016997676"
-                      beneficiary_id:
-                        type: string
-                        nullable: true
-                        example: null
-                      created_at:
-                        type: string
-                        format: date-time
-                        example: "2025-08-05T14:35:40.637Z"
-                      updated_at:
-                        type: string
-                        format: date-time
-                        example: "2025-08-05T14:35:40.637Z"
-                      _v:
-                        type: integer
-                        example: 1
-                      currency:
-                        type: string
-                        example: "NGN"
+                        example: "delivered"
         '400':
           description: Bad Request - Invalid phone number or plan
           content:
@@ -3044,7 +2915,7 @@ paths:
 
   /business/bills/electricity/pay:
     post:
-      summary: Pay Electricity Bill (API)
+      summary: Pay Electricity Bill 
       description: Processes electricity bill payment via API.
       tags:
         - Bills
@@ -3114,90 +2985,15 @@ paths:
                   data:
                     type: object
                     properties:
-                      transaction_id:
+                      reference:
                         type: string
-                        example: "TXN-01K1WZSME40SNY9F0HXEM3BW8H"
-                      transaction_type:
-                        type: string
-                        example: "DEBIT"
-                      transaction_category:
-                        type: string
-                        example: "bill payment"
-                      transaction_status:
-                        type: string
-                        example: "successful"
-                      balance_before:
-                        type: string
-                        example: "429225.60"
-                      balance_after:
-                        type: number
-                        example: 424225.6
-                      transaction_reference:
-                        type: string
-                        example: "TXN-01K1WZSME40SNY9F0HXEM3BW8H"
-                      description:
-                        type: string
-                        example: "PICKSON electricity payment for 12345678901"
+                        example: "ULID123456789"
                       amount:
+                        type: number
+                        example: 5000
+                      status:
                         type: string
-                        example: "-5000.00"
-                      channel:
-                        type: string
-                        example: "bank_transfer"
-                      payment_provider:
-                        type: string
-                        example: "9PSB"
-                      mode:
-                        type: string
-                        example: "electronic"
-                      charge:
-                        type: string
-                        example: "0.00"
-                      provider_charge:
-                        type: string
-                        example: "0.00"
-                      meta:
-                        type: object
-                        properties:
-                          data:
-                            type: object
-                            properties:
-                              source:
-                                type: string
-                                example: "api"
-                              biller_id:
-                                type: string
-                                example: "1"
-                              business_id:
-                                type: string
-                                example: "65e6e6d18d41d876944861da"
-                              meter_number:
-                                type: string
-                                example: "12345678901"
-                              phone_number:
-                                type: string
-                                example: "08012345678"
-                              collection_account_number:
-                                type: string
-                                example: "9016997676"
-                      beneficiary_id:
-                        type: string
-                        nullable: true
-                        example: null
-                      created_at:
-                        type: string
-                        format: date-time
-                        example: "2025-08-05T10:27:49.667Z"
-                      updated_at:
-                        type: string
-                        format: date-time
-                        example: "2025-08-05T10:27:49.667Z"
-                      _v:
-                        type: integer
-                        example: 1
-                      currency:
-                        type: string
-                        example: "NGN"
+                        example: "delivered"
         '400':
           description: Invalid payload, insufficient funds, or non-float wallet
           content:
@@ -3368,7 +3164,7 @@ paths:
 
   /business/bills/tv/pay:
     post:
-      summary: Pay TV Subscription (API)
+      summary: Pay TV Subscription 
       description: Processes TV subscription payment via API.
       tags:
         - Bills
@@ -3438,87 +3234,15 @@ paths:
                   data:
                     type: object
                     properties:
-                      transaction_id:
+                      reference:
                         type: string
-                        example: "TXN-01K1Y36GYVF5ZDTQ8B0MCT85V3"
-                      transaction_type:
-                        type: string
-                        example: "DEBIT"
-                      transaction_category:
-                        type: string
-                        example: "bill payment"
-                      transaction_status:
-                        type: string
-                        example: "successful"
-                      balance_before:
-                        type: string
-                        example: "429225.60"
-                      balance_after:
-                        type: number
-                        example: 414225.6
-                      transaction_reference:
-                        type: string
-                        example: "TXN-01K1Y36GYVF5ZDTQ8B0MCT85V3"
-                      description:
-                        type: string
-                        example: "PICKSON TV payment for 1234567890123456"
+                        example: "ULID123456789"
                       amount:
+                        type: number
+                        example: 5000
+                      status:
                         type: string
-                        example: "-15000.00"
-                      channel:
-                        type: string
-                        example: "bank_transfer"
-                      payment_provider:
-                        type: string
-                        example: "Safe_Haven"
-                      mode:
-                        type: string
-                        example: "electronic"
-                      charge:
-                        type: string
-                        example: "0.00"
-                      provider_charge:
-                        type: string
-                        example: "0.00"
-                      meta:
-                        type: object
-                        properties:
-                          data:
-                            type: object
-                            properties:
-                              source:
-                                type: string
-                                example: "api"
-                              package_id:
-                                type: string
-                                example: "PKG001"
-                              business_id:
-                                type: string
-                                example: "65e6e6d18d41d876944861da"
-                              smart_card_number:
-                                type: string
-                                example: "1234567890123456"
-                              collection_account_number:
-                                type: string
-                                example: "9016997676"
-                      beneficiary_id:
-                        type: string
-                        nullable: true
-                        example: null
-                      created_at:
-                        type: string
-                        format: date-time
-                        example: "2025-08-05T20:46:33.226Z"
-                      updated_at:
-                        type: string
-                        format: date-time
-                        example: "2025-08-05T20:46:33.226Z"
-                      _v:
-                        type: integer
-                        example: 1
-                      currency:
-                        type: string
-                        example: "NGN"
+                        example: "delivered"
         '400':
           description: Invalid payload, insufficient funds, or non-float wallet
           content:

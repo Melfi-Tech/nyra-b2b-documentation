@@ -13,7 +13,7 @@ This API performs KYC verification operations, including Basic BVN verification,
 
 ## Endpoints
 
-### Basic BVN Verification (API)
+### Basic BVN Verification 
 - **Endpoint**: `GET /business/kyc/bvn/basic`
 - **Description**: Performs a basic BVN verification and returns core identity details.
 - **Authentication**: API Client (`x-client-id`, `Bearer <client_secret>`)
@@ -44,7 +44,7 @@ This API performs KYC verification operations, including Basic BVN verification,
   - 401 Unauthorized: Invalid client credentials.
   - 404 Not Found: Business or wallet not found.
 
-### Advance BVN Verification (API)
+### Advance BVN Verification 
 - **Endpoint**: `GET /business/kyc/bvn/advance`
 - **Description**: Performs an advance BVN verification and returns extended identity details.
 - **Authentication**: API Client (`x-client-id`, `Bearer <client_secret>`)
@@ -93,7 +93,7 @@ This API performs KYC verification operations, including Basic BVN verification,
   - 401 Unauthorized: Invalid client credentials.
   - 404 Not Found: Business or wallet not found.
 
-### NIN Verification (API)
+### NIN Verification 
 - **Endpoint**: `GET /business/kyc/nin`
 - **Description**: Performs NIN verification and returns identity details including photo and employment status.
 - **Authentication**: API Client (`x-client-id`, `Bearer <client_secret>`)
