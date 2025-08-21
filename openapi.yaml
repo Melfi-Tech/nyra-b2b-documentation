@@ -1440,41 +1440,46 @@ paths:
 
 
 
-
   /business/wallets/temporary-account:
     post:
       summary: Create Temporary Account
-      description: Creates a temporary virtual account for the business.
+      description: Creates a one-time virtual account for funding a business wallet.
       tags:
         - Temporary Accounts
       security:
         - ClientAuth: []
-        - ClientSecret: []
+          ClientSecret: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required:
-                - business_id
-                - amount
-                - description
+              required: [external_reference, amount]
               properties:
-                business_id:
+                external_reference:
                   type: string
-                  description: The ID of the business
-                  example: "65e6e6d18d41d876944861da"
+                  description: Unique reference (10–26 chars)
+                  example: "LIM45699343399438"
                 amount:
                   type: number
-                  description: Amount to be transferred to the temporary account
-                  example: 50000
-                description:
-                  type: string
-                  description: Description of the temporary account purpose
-                  example: "Payment for services"
+                  description: Expected funding amount in NGN (min 300)
+                  example: 5000
+                expiresIn:
+                  type: number
+                  description: Account validity in seconds
+                  example: 900
+                meta:
+                  type: object
+                  properties:
+                    customer_name:
+                      type: string
+                      example: "John Doe"
+                    customer_email:
+                      type: string
+                      example: "john.doe@example.com"
       responses:
-        '201':
+        '200':
           description: Temporary account created successfully
           content:
             application/json:
@@ -1484,184 +1489,98 @@ paths:
                   success:
                     type: boolean
                     example: true
-                  data:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        example: "65e6e6d18d41d876944861da"
-                      session_id:
-                        type: string
-                        example: "session_123456"
-                      account_number:
-                        type: string
-                        example: "1234567890"
-                      bank_name:
-                        type: string
-                        example: "Test Bank"
-                      amount:
-                        type: number
-                        example: 50000
-                      status:
-                        type: string
-                        enum: ["PENDING", "COMPLETED", "EXPIRED"]
-                        example: "PENDING"
-                      expires_at:
-                        type: string
-                        format: date-time
-                        example: "2024-12-31T23:59:59Z"
                   message:
                     type: string
                     example: "Temporary account created successfully"
-        '400':
-          description: Bad Request - Invalid business ID or amount
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: integer
-                    example: 400
-                  status:
-                    type: string
-                    example: "error"
-                  success:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: "Bad Request"
-                  message:
-                    type: string
-                    example: "Invalid business ID or amount"
-        '403':
-          description: Forbidden - User lacks permission
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: integer
-                    example: 403
-                  status:
-                    type: string
-                    example: "error"
-                  success:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: "Forbidden"
-                  message:
-                    type: string
-                    example: "User lacks permission"
-
-  /business/wallets/temporary-account/{id}:
-    get:
-      summary: Get Temporary Account
-      description: Retrieves details of a specific temporary account.
-      tags:
-        - Temporary Accounts
-      security:
-        - ClientAuth: []
-        - ClientSecret: []
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: The ID of the temporary account
-          schema:
-            type: string
-          example: "65e6e6d18d41d876944861da"
-      responses:
-        '200':
-          description: Temporary account retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
                   data:
                     type: object
                     properties:
                       id:
                         type: string
-                        example: "65e6e6d18d41d876944861da"
-                      session_id:
+                        example: "01K22HK0MGGAPQFBNV0T045CBW"
+                      business:
                         type: string
-                        example: "session_123456"
+                        example: "9718b4b64b70add2215210c7"
                       account_number:
                         type: string
-                        example: "1234567890"
+                        example: "6029414052"
+                      account_name:
+                        type: string
+                        example: "Nyra Wallet Checkout"
                       bank_name:
                         type: string
-                        example: "Test Bank"
+                        example: "Safe Haven MFB"
                       amount:
                         type: number
-                        example: 50000
-                      status:
+                        example: 5090.00
+                      bank_code:
                         type: string
-                        enum: ["PENDING", "COMPLETED", "EXPIRED"]
-                        example: "PENDING"
-                      expires_at:
+                        example: "090286"
+                      expiry_date:
                         type: string
                         format: date-time
-                        example: "2024-12-31T23:59:59Z"
+                        example: "2025-08-07T16:51:00.000Z"
+                      status:
+                        type: string
+                        example: "pending"
+                      expiresIn:
+                        type: number
+                        example: 900
+                      external_reference:
+                        type: string
+                        example: "LIM45699343399438"
                       created_at:
                         type: string
                         format: date-time
-                        example: "2024-01-15T10:30:00Z"
-                  message:
-                    type: string
-                    example: "Temporary account retrieved successfully"
-        '404':
-          description: Not Found - Temporary account not found
+                        example: "2025-08-07T16:36:00.000Z"
+                      meta:
+                        type: object
+                        properties:
+                          customer_name:
+                            type: string
+                            example: "John Doe"
+                          customer_email:
+                            type: string
+                            example: "john.doe@example.com"
+        '400':
+          description: Invalid payload or duplicate external_reference
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: integer
-                    example: 404
-                  status:
-                    type: string
-                    example: "error"
-                  success:
-                    type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: "Not Found"
-                  message:
-                    type: string
-                    example: "Temporary account not found"
-
-  /business/wallets/temporary-account/{sessionId}/status:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid client credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to create the account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+  /business/wallets/temporary-account/{id}:
     get:
-      summary: Get Temporary Account Transfer Status
-      description: Retrieves the transfer status of a temporary account using the session ID.
+      summary: Get Temporary Account
+      description: Retrieves details of a specific temporary account by its ID.
       tags:
         - Temporary Accounts
       security:
         - ClientAuth: []
-        - ClientSecret: []
+          ClientSecret: []
       parameters:
-        - name: sessionId
-          in: path
+        - in: path
+          name: id
           required: true
-          description: The session ID of the temporary account
+          description: Temporary account ID (UUID)
           schema:
             type: string
-          example: "session_123456"
+          example: "01K22HK0MGGAPQFBNV0T045CBW"
       responses:
         '200':
-          description: Transfer status retrieved successfully
+          description: Temporary account fetched successfully
           content:
             application/json:
               schema:
@@ -1670,49 +1589,230 @@ paths:
                   success:
                     type: boolean
                     example: true
+                  message:
+                    type: string
+                    example: "Temporary account fetched successfully"
                   data:
                     type: object
                     properties:
-                      session_id:
+                      id:
                         type: string
-                        example: "session_123456"
-                      status:
+                        example: "01K22HK0MGGAPQFBNV0T045CBW"
+                      account_number:
                         type: string
-                        enum: ["PENDING", "COMPLETED", "EXPIRED"]
-                        example: "COMPLETED"
+                        example: "6029414052"
+                      account_name:
+                        type: string
+                        example: "Nyra Wallet Checkout"
+                      bank_name:
+                        type: string
+                        example: "Safe Haven MFB"
                       amount:
                         type: number
-                        example: 50000
-                      completed_at:
+                        example: 5090.00
+                      bank_code:
+                        type: string
+                        example: "090286"
+                      expiry_date:
                         type: string
                         format: date-time
-                        example: "2024-01-15T11:30:00Z"
-                  message:
-                    type: string
-                    example: "Transfer status retrieved successfully"
+                        example: "2025-08-07T16:51:00.000Z"
+                      status:
+                        type: string
+                        example: "pending"
+                      expiresIn:
+                        type: number
+                        example: 900
+                      external_reference:
+                        type: string
+                        example: "LIM45699343399438"
+                      created_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-07T16:36:00.000Z"
+                      meta:
+                        type: object
+                        properties:
+                          customer_name:
+                            type: string
+                            example: "John Doe"
+                          customer_email:
+                            type: string
+                            example: "john.doe@example.com"
+        '400':
+          description: Missing or invalid id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid client credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Not Found - Session not found
+          description: Temporary account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to retrieve the account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
+  /business/wallets/temporary-account/{sessionId}/status:
+    get:
+      summary: Get Temporary Account Transfer Status
+      description: Retrieves the transfer status of a temporary account by its session ID.
+      tags:
+        - Temporary Accounts
+      security:
+        - ClientAuth: []
+          ClientSecret: []
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          description: Session ID of the transfer
+          schema:
+            type: string
+          example: "68714b6cc0f8770024c37a90"
+      responses:
+        '200':
+          description: Completed successfully
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  statusCode:
-                    type: integer
-                    example: 404
-                  status:
-                    type: string
-                    example: "error"
                   success:
                     type: boolean
-                    example: false
-                  error:
-                    type: string
-                    example: "Not Found"
+                    example: true
                   message:
                     type: string
-                    example: "Session not found"
-
+                    example: "Completed successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "68714b6cc0f8770024c37a90"
+                      business:
+                        type: string
+                        example: "9718b4b64b70add2215210c7"
+                      virtualAccount:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: "01K22HK0MGGAPQFBNV0T045CBW"
+                          account_number:
+                            type: string
+                            example: "6029414052"
+                          account_name:
+                            type: string
+                            example: "Nyra Wallet Checkout"
+                          bank_name:
+                            type: string
+                            example: "Safe MFB"
+                          amount:
+                            type: number
+                            example: 5090.00
+                          bank_code:
+                            type: string
+                            example: "090286"
+                          expiry_date:
+                            type: string
+                            format: date-time
+                            example: "2025-08-07T16:51:00.000Z"
+                          status:
+                            type: string
+                            example: "successful"
+                          expiresIn:
+                            type: number
+                            example: 900
+                          external_reference:
+                            type: string
+                            example: "LIM45699343399438"
+                          created_at:
+                            type: string
+                            format: date-time
+                            example: "2025-08-07T16:36:00.000Z"
+                          meta:
+                            type: object
+                            properties:
+                              customer_name:
+                                type: string
+                                example: "John Doe"
+                              customer_email:
+                                type: string
+                                example: "john.doe@example.com"
+                      credit_account_number:
+                        type: string
+                        example: "6025123067"
+                      credit_account_name:
+                        type: string
+                        example: "Nyra Wallet Checkout"
+                      amount_paid:
+                        type: number
+                        example: 5000
+                      external_reference:
+                        type: string
+                        example: "LIZ45699343399438"
+                      currency:
+                        type: string
+                        example: "NGN"
+                      provider:
+                        type: string
+                        example: "NYRA WALLET"
+                      narration:
+                        type: string
+                        example: "Transfer from JANE DOE"
+                      paid_at:
+                        type: string
+                        format: date-time
+                        example: "2025-08-07T16:45:00.000Z"
+                      sender_bank:
+                        type: string
+                        example: "Safe Haven MFB"
+                      sender_name:
+                        type: string
+                        example: "JANE DOE"
+                      sender_account_number:
+                        type: string
+                        example: "9138639500"
+                      status:
+                        type: string
+                        example: "Completed"
+        '400':
+          description: Missing or invalid sessionId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid client credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Temporary account or session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to retrieve the status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  
   /business/identities/bvn/verify:
     post:
       summary: Verify BVN
