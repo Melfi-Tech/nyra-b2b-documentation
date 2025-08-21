@@ -76,9 +76,8 @@
               "api-reference/business/bills-tv-validate",
               "api-reference/business/bills-tv-provider-items",
               "api-reference/business/bills-tv-pay",
-              "api-reference/business/bills-categories-categories",
-              "api-reference/business/bills-categories-categories-ctx",
-              "api-reference/business/bills-categories-categories-category-id-billers"
+              "api-reference/business/bills-vas-services",
+              "api-reference/business/bills-vas-service-id-billers"
             ]
           },
 

@@ -3262,33 +3262,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-
-
-      
-
-
-
-  /business/bills/categories/categories:
+  /business/vas/services:
     get:
-      summary: Get Bill Categories
-      description: Retrieves available bill categories for a specific category context (electricity, cable_tv, or betting).
+      summary: Get Services
+      description: Retrieves all available services for business bills.
       tags:
         - Bills
       security:
         - ClientAuth: []
-        - ClientSecret: []
-      parameters:
-        - name: bill_category_ctx
-          in: query
-          required: true
-          description: Category context (electricity, cable_tv, or betting)
-          schema:
-            type: string
-            enum: ["electricity", "cable_tv", "betting"]
-            example: "electricity"
+          ClientSecret: []
       responses:
         '200':
-          description: Bill categories retrieved successfully
+          description: Services retrieved successfully
           content:
             application/json:
               schema:
@@ -3299,7 +3284,7 @@ paths:
                     example: true
                   message:
                     type: string
-                    example: "Bill categories retrieved successfully"
+                    example: "Services retrieved successfully"
                   data:
                     type: array
                     items:
@@ -3308,116 +3293,51 @@ paths:
                         id:
                           type: string
                           example: "1"
-                        category:
+                        service:
                           type: string
-                          example: "ELECTRICITY"
-                        provider:
-                          type: string
-                          example: "9PSB"
+                          example: "airtime"
+                    example:
+                      - id: "1"
+                        service: "airtime"
+                      - id: "2"
+                        service: "data"
+                      - id: "3"
+                        service: "electricity"
+                      - id: "4"
+                        service: "cable_tv"
         '400':
-          description: Invalid category context or missing parameters
+          description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
-          description: Invalid client credentials
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Business not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Provider service unavailable
+          description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /business/bills/categories/categories-ctx:
-    get:
-      summary: Get Bill Categories Contexts
-      description: Retrieves all available bill category contexts and their corresponding provider mappings.
-      tags:
-        - Bills
-      security:
-        - ClientAuth: []
-        - ClientSecret: []
-      responses:
-        '200':
-          description: Bill categories contexts retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: "Bill categories contexts retrieved successfully"
-                  data:
-                    type: object
-                    properties:
-                      cable_tv:
-                        type: string
-                        example: "cable_tv"
-                      electricity:
-                        type: string
-                        example: "electricity"
-        '401':
-          description: Invalid client credentials
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Business not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Service unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /business/bills/categories/categories/{category_id}/billers:
+  /business/vas/{service_id}/billers:
     get:
       summary: Get Category Billers
-      description: Retrieves available billers for a specific category ID within a category context.
+      description: Retrieves billers for a specific service.
       tags:
         - Bills
       security:
         - ClientAuth: []
-        - ClientSecret: []
+          ClientSecret: []
       parameters:
-        - name: category_id
-          in: path
+        - in: path
+          name: service_id
           required: true
-          description: Category ID
           schema:
             type: string
-          example: "1"
-        - name: bill_category_ctx
-          in: query
-          required: true
-          description: Category context (electricity or cable_tv)
-          schema:
-            type: string
-            enum: ["electricity", "cable_tv"]
-            example: "electricity"
+            example: "3"
+          description: Service ID (1=airtime, 2=data, 3=electricity, 4=cable_tv)
       responses:
         '200':
-          description: Category billers retrieved successfully
+          description: Service billers retrieved successfully
           content:
             application/json:
               schema:
@@ -3428,7 +3348,7 @@ paths:
                     example: true
                   message:
                     type: string
-                    example: "Category billers retrieved successfully"
+                    example: "Service billers retrieved successfully"
                   data:
                     type: array
                     items:
@@ -3436,38 +3356,27 @@ paths:
                       properties:
                         id:
                           type: string
-                          example: "BP-ABUJA"
                         biller:
                           type: string
-                          example: "AEDC"
-                        provider:
-                          type: string
-                          example: "9PSB"
+                    example:
+                      - id: "61efac19b5ce7eaad3b405d4"
+                        biller: "BEDC"
+                      - id: "61efac27da92348f9dde5f74"
+                        biller: "EKEDC"
+                      - id: "61efac35da92348f9dde5f77"
+                        biller: "AEDC"
         '400':
-          description: Invalid category ID or context, or no billers found
+          description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '401':
-          description: Invalid client credentials
+          description: Unauthorized
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Business, category, or billers not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Provider service unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
 components:
   securitySchemes:
     BearerAuth:
